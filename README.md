@@ -1,39 +1,7 @@
-# tl-navigator_v3
+# tl-navi
+Translocator route finder for the game Vintage Story. This project is a successor for my [tl-navigator](github.com/herrscher-of-sleeping/tl-navigator) rewritten from scratch.
 
-This template should help get you started developing with Vue 3 in Vite.
+You can find a running instance of this at [translocator.moe](https://translocator.moe)
 
-## Recommended IDE Setup
-
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
-
-## Type Support for `.vue` Imports in TS
-
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vite.dev/config/).
-
-## Project Setup
-
-```sh
-bun install
-```
-
-### Compile and Hot-Reload for Development
-
-```sh
-bun dev
-```
-
-### Type-Check, Compile and Minify for Production
-
-```sh
-bun run build
-```
-
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
-bun lint
-```
+## License
+MIT except for files landmarks.geojson and translocators.geojson, which are pulled from TOPS web map and are held in this repo for the sake of it being a static website.
