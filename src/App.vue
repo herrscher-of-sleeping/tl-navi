@@ -122,8 +122,7 @@ provide("landmarksList", landmarksList);
           </div>
           <button @click="onButtonClick" class="calculate-button">Calculate</button>
           <div v-if="isCalculating" class="progress">
-            <p>{{ progressType }}: {{ progress }}</p>
-            <div class="progress-bar" :style="{ width: progress + '%' }"></div>
+            <p>{{ progressType }}: {{ progress.toFixed(1) }}%</p>
           </div>
         </div>
         <div id="path-output">
