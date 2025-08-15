@@ -139,6 +139,7 @@ const getClassByTravelDistance = (distance: number) => {
   <input style="display:none" ref="copyInput">
   <div class="list" v-if="path.length > 0">
     <div>
+      {{ props.path.length / 2 - 1 }} translocator jumps; approximate walk distance: {{ totalDistance }} blocks
       <ul id="path">
         <li v-for="(distance, index) in distances" :key="index">
           Walk <span :class="getClassByTravelDistance(distance)">{{ distance }}</span> blocks
@@ -146,7 +147,6 @@ const getClassByTravelDistance = (distance: number) => {
           to <coord-clickie :point-id="index * 2 + 1"></coord-clickie>
         </li>
       </ul>
-      {{ props.path.length / 2 - 1 }} translocator jumps; approximate walk distance: {{ totalDistance }} blocks
     </div>
   </div>
 </template>

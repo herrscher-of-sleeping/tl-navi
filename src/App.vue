@@ -151,6 +151,13 @@ html, body, #root {
   flex-direction: column;
   margin: 10px;
 }
+
+#path-output {
+  height: 100vh;
+  overflow-y: auto;
+  margin-top: 10px;
+}
+
 .left-fullwidth {
   width: 100%;
 }
