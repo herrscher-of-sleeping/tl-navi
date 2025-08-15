@@ -2,6 +2,7 @@
 import { type Point } from "../pathfinder/types";
 import { ref, type Ref, h, computed } from "vue";
 import CopyIcon from "./icons/IconCopy.vue";
+import TranslocatorIcon from "./icons/IconTranslocator.vue";
 import { emitSignal } from "@/signal";
 
 const props = defineProps<{
@@ -72,6 +73,7 @@ const CoordClickie = (localProps: {pointId: number}) => {
       [h(CopyIcon)]
     );
   }
+  const tlIcon = pointId === 0 || pointId === props.path.length - 1 ? null : h(TranslocatorIcon);
   return h(
     "span",
     {},
@@ -91,6 +93,7 @@ const CoordClickie = (localProps: {pointId: number}) => {
           },
         },
         [
+        tlIcon,
           `[${props.path[Number(localProps["pointId"])][0]}, ${-props.path[Number(localProps["pointId"])][1]}]`,
         ]
       ),

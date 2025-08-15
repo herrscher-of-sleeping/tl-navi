@@ -1,8 +1,7 @@
 <template>
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 63 63" width="16" height="16">
+  <svg class="tl-navi-icon tl-navi-icon-copy" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 63 63" width="16" height="16">
     <defs></defs>
     <g>
-      <rect fill="#ffffff" x="0" y="0" width="64" height="64" />
       <g>
         <g transform="matrix(1,0,0,1,9.935960727,2.929834573)">
           <path

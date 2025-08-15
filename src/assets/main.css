@@ -55,13 +55,13 @@ a,
     color: white;
   }
 
-  svg * {
+  .tl-navi-icon * {
     fill: black;
     color: white;
     background: white;
   }
 
-  svg path {
+  .tl-navi-icon path {
     fill: white;
     color: white;
     background: white;
@@ -79,6 +79,9 @@ a,
   .help-tooltip {
     background-color: #134269 !important;
     color: white;
+  }
+  .tl-navi-icon-translocator path {
+    stroke: #FFA0FF;
   }
 }
 
@@ -99,4 +102,12 @@ a,
   button.coord-clickie-active {
     color: darkviolet;
   }
+
+  .tl-navi-icon-translocator path {
+    stroke: darkviolet;
+  }
+}
+
+.tl-navi-icon-translocator {
+  margin-right: 5px;
 }
