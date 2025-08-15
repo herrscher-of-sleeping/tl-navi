@@ -133,7 +133,7 @@ const totalDistance = computed(() => {
           to <coord-clickie :point-id="index * 2 + 1"></coord-clickie>
         </li>
       </ul>
-      Approximate walk distance: {{ totalDistance }} blocks
+      {{ props.path.length / 2 - 1 }} translocator jumps; approximate walk distance: {{ totalDistance }} blocks
     </div>
   </div>
 </template>
