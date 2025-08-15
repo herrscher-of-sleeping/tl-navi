@@ -83,6 +83,22 @@ a,
   .tl-navi-icon-translocator path {
     stroke: #FFA0FF;
   }
+
+  .travel-distance-short{
+    color: green;
+  }
+  .travel-distance-medium{
+    color: yellowgreen;
+  }
+  .travel-distance-long{
+    color: yellow;
+  }
+  .travel-distance-very-long{
+    color: orange;
+  }
+  .travel-distance-insane{
+    color: red;
+  }
 }
 
 @media (prefers-color-scheme: light) {
@@ -105,6 +121,22 @@ a,
 
   .tl-navi-icon-translocator path {
     stroke: darkviolet;
+  }
+
+  .travel-distance-short{
+    color: #00AA90;
+  }
+  .travel-distance-medium{
+    color: #608020;
+  }
+  .travel-distance-long{
+    color: #906000;
+  }
+  .travel-distance-very-long{
+    color: #A03000;
+  }
+  .travel-distance-insane{
+    color: #F00000;
   }
 }
 

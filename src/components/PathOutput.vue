@@ -120,6 +120,19 @@ const totalDistance = computed(() => {
   return distances.value.reduce((sum, distance) => sum + distance, 0);
 })
 
+const getClassByTravelDistance = (distance: number) => {
+  if (distance < 100) {
+    return "travel-distance-short";
+  } else if (distance < 500) {
+    return "travel-distance-medium";
+  } else if (distance < 1000) {
+    return "travel-distance-long";
+  } else if (distance < 2000) {
+    return "travel-distance-very-long";
+  }
+  return "travel-distance-insane";
+}
+
 </script>
 
 <template>
@@ -128,7 +141,7 @@ const totalDistance = computed(() => {
     <div>
       <ul id="path">
         <li v-for="(distance, index) in distances" :key="index">
-          Walk {{ distance }} blocks
+          Walk <span :class="getClassByTravelDistance(distance)">{{ distance }}</span> blocks
           from <coord-clickie :point-id="index * 2"></coord-clickie>
           to <coord-clickie :point-id="index * 2 + 1"></coord-clickie>
         </li>
