@@ -157,7 +157,6 @@ html, body, #root {
 }
 .right {
   flex: 1;
-  background: #ddd;
 }
 
 li {

@@ -85,9 +85,10 @@ const CoordClickie = (localProps: {pointId: number}) => {
               openInANewTab();
             }
           },
-          style: {
-            color: isSamePoint(activePoint.value, point)? "violet" : "blue"
-          }
+          class: {
+            "coord-clickie": true,
+            "coord-clickie-active": isSamePoint(activePoint.value, point)
+          },
         },
         [
           `[${props.path[Number(localProps["pointId"])][0]}, ${-props.path[Number(localProps["pointId"])][1]}]`,
@@ -155,6 +156,5 @@ li {
 .list {
   flex: 1;
   overflow-y: auto;
-  background: #fafafa;
 }
 </style>

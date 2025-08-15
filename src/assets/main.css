@@ -1,12 +1,3 @@
-@import './base.css';
-
-#app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  font-weight: normal;
-}
-
 a,
 .green {
   text-decoration: none;
@@ -21,15 +12,91 @@ a,
   }
 }
 
-@media (min-width: 1024px) {
-  body {
-    display: flex;
-    place-items: center;
+@media (prefers-color-scheme: dark) {
+  :root {
+    background-color: #0F0F0F;
+    color: white;
   }
 
-  #app {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    padding: 0 2rem;
+  a {
+    color: aqua;
+  }
+
+  a:visited {
+    color: chocolate;
+  }
+
+  .footer {
+    background-color: #0F0F0F;
+  }
+
+  .multiselect .multiselect__tags {
+    background-color: #101010;
+    color: white;
+  }
+
+  .multiselect__tags .multiselect__single {
+    background-color: #101010;
+    color: white;
+  }
+
+  .multiselect .multiselect__input {
+    background-color: #101010;
+    color: white;
+  }
+
+  .multiselect .multiselect__content-wrapper {
+    background-color: #101010;
+    color: white;
+  }
+
+  .multiselect .multiselect__option--selected {
+    background-color: #101010;
+    color: white;
+  }
+
+  svg * {
+    fill: black;
+    color: white;
+    background: white;
+  }
+
+  svg path {
+    fill: white;
+    color: white;
+    background: white;
+  }
+
+  button.coord-clickie {
+    background-color: #222222;
+    color: lightblue;
+  }
+
+  button.coord-clickie-active {
+    color: violet;
+  }
+
+  .help-tooltip {
+    background-color: #134269 !important;
+    color: white;
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    background-color: white;
+    color: black;
+  }
+
+  .footer {
+    background-color: white;
+  }
+
+  button.coord-clickie {
+    color: blue;
+  }
+
+  button.coord-clickie-active {
+    color: darkviolet;
   }
 }
