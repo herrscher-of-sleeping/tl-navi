@@ -27,7 +27,7 @@ function navigateToPoint(i: number|null) {
 }
 
 function copyCommand(point0: Point, point1: Point) {
-  const cmd = `/waypoint addati spiral ${point0[0]} 110 ${point0[1]} false purple TL to ${point1[0]}, ${-point1[1]}`;
+  const cmd = `/waypoint addati spiral ${point0[0]} 110 ${-point0[1]} false purple TL to ${point1[0]}, ${-point1[1]}`;
 
   if (!copyInput.value) {
     return;
@@ -65,8 +65,8 @@ const CoordClickie = (localProps: {pointId: number}) => {
       "a",
       {
         onClick: () => {
-          const otherPointId = pointId % 0 ? pointId - 1 : pointId + 1;
-          copyCommand(props.path[otherPointId], props.path[pointId]);
+          const otherPointId = pointId % 2 ? pointId + 1 : pointId - 1;
+          copyCommand(props.path[pointId], props.path[otherPointId]);
         },
         title: "Copy waypoint command"
       },
