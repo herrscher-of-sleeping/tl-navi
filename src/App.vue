@@ -118,7 +118,7 @@ provide("landmarksList", landmarksList);
             More teleporting <input type="range" min="0" max="1000" v-model.number="translocatorWeight"> more walking.
             <span>(Translocator weight {{translocatorWeight}})</span>
             <span class="help-tooltip" :title="translocatorWeight === 0? `0 means you don't want any extra walking for less teleportations`:
-              `This means you're fine walking extra ${translocatorWeight} for one less teleportation`">?</span>
+              `This means you're fine walking extra ${translocatorWeight} for one less teleportation`" onclick="alert(this.title)">?</span>
           </div>
           <button @click="onButtonClick" class="calculate-button">Calculate</button>
           <div v-if="isCalculating" class="progress">
