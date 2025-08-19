@@ -20,7 +20,7 @@ export const store = reactive({
   zoom: 5,
 });
 
-const formatURL = (userUrlInput?: string): string => {
+export const formatURL = (userUrlInput?: string): string => {
   if (!userUrlInput) {
     return "";
   }

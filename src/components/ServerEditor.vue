@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Multiselect } from "vue-multiselect";
 import { ref, type Ref } from "vue";
-import { store, TOPS_NAME } from "../store";
+import { store, TOPS_NAME, formatURL } from "../store";
 import { db } from "../db";
 import * as Signal from "../signal";
 import * as types from "../pathfinder/types";
@@ -131,9 +131,9 @@ const startEditing = () => {
       <div><input v-model="serverName" type="text"></div>
       <div>Webmap link (set to get geojson file links and webmap view):</div>
       <div><input v-model="serverLink" type="text"></div>
-      <div>translocators.geojson: <a v-if="serverLink" :href="serverLink + '/data/geojson/translocators.geojson'">download</a></div>
+      <div>translocators.geojson: <a v-if="serverLink" :href="formatURL(serverLink) + '/data/geojson/translocators.geojson'">download</a></div>
       <div><input ref="translocatorsInput" accept=".json, .geojson" id="translocators_file" type="file" @change="onTranslocatorsFileChange"></div>
-      <div>landmarks.geojson: <a v-if="serverLink" :href="serverLink + '/data/geojson/landmarks.geojson'">download</a></div>
+      <div>landmarks.geojson: <a v-if="serverLink" :href="formatURL(serverLink) + '/data/geojson/landmarks.geojson'">download</a></div>
       <div><input ref="landmarksInput" accept=".json, .geojson" id="landmarks_file" type="file" @change="onLandmarksFileChange"></div>
     </div>
   </div>
