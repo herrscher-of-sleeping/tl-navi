@@ -99,6 +99,11 @@ a,
   .travel-distance-insane{
     color: red;
   }
+
+  .zoom-select-container {
+    background: #222;
+    color: white;
+  }
 }
 
 @media (prefers-color-scheme: light) {
@@ -138,6 +143,11 @@ a,
   .travel-distance-insane{
     color: #F00000;
   }
+
+  .zoom-select-container {
+    background: white;
+    color: black;
+  }
 }
 
 .tl-navi-icon-translocator {
@@ -159,4 +169,13 @@ button, input[type=file]::file-selector-button {
     color: #e8e8e8;
     border-style: solid;
   }
+}
+
+.zoom-select-container {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 10000;
+  padding: 5px;
+  border-radius: 4px;
 }

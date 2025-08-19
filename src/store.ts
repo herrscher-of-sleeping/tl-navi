@@ -17,6 +17,7 @@ export const store = reactive({
   landmarksGeojson: null as types.LandmarksGeojson|null,
   mapLink: "",
   isEditingServer: false,
+  zoom: 5,
 });
 
 const formatURL = (userUrlInput?: string): string => {
