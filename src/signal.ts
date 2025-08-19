@@ -9,7 +9,7 @@ export function subscribe(name: string, callback: CallbackType) {
   signals[name].push(callback);
 }
 
-export function emitSignal(name: string, value: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
+export function emitSignal(name: string, value: any = undefined) { // eslint-disable-line @typescript-eslint/no-explicit-any
   if (signals[name] !== undefined) {
     signals[name].forEach(callback => {
       callback(value);

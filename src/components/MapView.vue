@@ -1,13 +1,14 @@
 <script setup lang="ts">
-import { type Point } from "../pathfinder/types";
 import { ref, type Ref } from "vue";
+import { type Point } from "@/pathfinder/types";
 import { subscribe } from "@/signal";
+import { store } from "@/store";
 
 const coords: Ref<null|Point> = ref(null);
 
 const makeUrl = (coords: null|Point) => {
   if (coords !== null) {
-    return `https://map.tops.vintagestory.at/?x=${coords[0]}&y=${coords[1]}&zoom=11`;
+    return `${store.mapLink}/?x=${coords[0]}&y=${coords[1]}&zoom=11`;
   }
   return "";
 }
@@ -23,8 +24,7 @@ subscribe("set-display-point", function(point: Point|null) {
 </script>
 
 <template>
-  <div id="map" :style="{display: getDisplayStyle(coords), height: '100vh'}">
-    <!-- <div style="min-width: 400px;min-height: 400px;"></div> -->
+  <div v-if="store.mapLink" id="map" :style="{display: getDisplayStyle(coords), height: '100vh'}">
     <iframe :src="makeUrl(coords)" frameborder="0" style="width: 100%; height: 100vh; display: block;"></iframe>
   </div>
 </template>

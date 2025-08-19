@@ -14,7 +14,7 @@ a,
 
 @media (prefers-color-scheme: dark) {
   :root {
-    background-color: #0F0F0F;
+    background-color: #303030;
     color: white;
   }
 
@@ -27,31 +27,31 @@ a,
   }
 
   .footer {
-    background-color: #0F0F0F;
+    background-color: #303030;
   }
 
   .multiselect .multiselect__tags {
-    background-color: #101010;
+    background-color: #303030;
     color: white;
   }
 
   .multiselect__tags .multiselect__single {
-    background-color: #101010;
+    background-color: #303030;
     color: white;
   }
 
   .multiselect .multiselect__input {
-    background-color: #101010;
+    background-color: #303030;
     color: white;
   }
 
   .multiselect .multiselect__content-wrapper {
-    background-color: #101010;
+    background-color: #303030;
     color: white;
   }
 
   .multiselect .multiselect__option--selected {
-    background-color: #101010;
+    background-color: #303030;
     color: white;
   }
 
@@ -142,4 +142,21 @@ a,
 
 .tl-navi-icon-translocator {
   margin-right: 5px;
+}
+
+button, input[type=file]::file-selector-button {
+  min-height: 32px;
+  border-color: #e8e8e8;
+  border-style: solid;
+  border-width: 1px;
+  border-radius: 5px;
+}
+
+@media (prefers-color-scheme: dark) {
+  button, input[type=file]::file-selector-button {
+    border-color: #e8e8e8;
+    background-color: transparent;
+    color: #e8e8e8;
+    border-style: solid;
+  }
 }

@@ -3,15 +3,15 @@ import { type Value } from "./types";
 import CoordinateInput from './components/CoordinateInput.vue';
 import PathOutput from "./components/PathOutput.vue";
 import MapView from "./components/MapView.vue";
-import { onMounted, onUnmounted, provide, computed, ref, type Ref } from 'vue';
+import { onMounted, onUnmounted, computed, ref, type Ref } from 'vue';
 import * as types from "./pathfinder/types";
-import {findPath} from "./pathfinder";
-import type { Point, LandmarkFeature} from "./pathfinder/types";
+import { findPath } from "./pathfinder";
 import { subscribe } from "@/signal";
+import ServerEditor from "./components/ServerEditor.vue";
+import { store } from "./store";
 
+type Point = types.Point;
 
-const landmarksList = ref<Value[]>([]);
-const translocatorsList = ref<types.TranslocatorsGeojson|null>(null);
 const from = ref<Value|null>({coordinates: [0, 0]});
 const to = ref<Value|null>({coordinates: [0, 0]});
 const isCalculating = ref(false);
@@ -38,14 +38,14 @@ async function calculatePath(from: Value|null, to: Value|null) {
   if (isCalculating.value) {
     return;
   }
-  if (!translocatorsList.value) {
+  if (!store.translocatorsGeojson) {
     return;
   }
 
   isCalculating.value = true;
   progress.value = 0;
 
-  const pathGenerator = findPath(translocatorsList.value, {
+  const pathGenerator = findPath(store.translocatorsGeojson, {
     from: fromCoords,
     to: toCoords,
     queryExpansionStartDist: maxWalkDistance.value,
@@ -74,6 +74,9 @@ function onButtonClick() {
 }
 
 function handleEnterKey(event: KeyboardEvent) {
+  if (store.isEditingServer) {
+    return;
+  }
   // @ts-expect-error this works, but TODO: track multiselect state or something
   if ((document.querySelectorAll(".multiselect__content-wrapper").entries()).every(item => item[1].style.display === "none")) {
     if (event.key === 'Enter') {
@@ -83,22 +86,12 @@ function handleEnterKey(event: KeyboardEvent) {
 }
 
 onMounted(async () => {
-  landmarksList.value = (await (await fetch("landmarks.geojson")).json()).features.map((feature: LandmarkFeature): Value => {
-    const coords =  [feature.geometry.coordinates[0], -feature.geometry.coordinates[1]];
-    return {
-      name: feature.properties.label,
-      coordinates: coords,
-    } as Value;
-  });
-  translocatorsList.value = (await (await fetch("translocators.geojson")).json());
   window.addEventListener('keydown', handleEnterKey);
 });
 
 onUnmounted(async () => {
   window.removeEventListener('keydown', handleEnterKey);
 })
-
-provide("landmarksList", landmarksList);
 
 </script>
 
@@ -110,17 +103,27 @@ provide("landmarksList", landmarksList);
     <div id="root" class="container">
       <div :class="leftPaneClass">
         <div id="params">
-          From:
-          <CoordinateInput v-model="from"></CoordinateInput>
-          To:
-          <CoordinateInput v-model="to"></CoordinateInput>
-          <div>
-            More teleporting <input type="range" min="0" max="1000" v-model.number="translocatorWeight"> more walking.
-            <span>(Translocator weight {{translocatorWeight}})</span>
-            <span class="help-tooltip" :title="translocatorWeight === 0? `0 means you don't want any extra walking for less teleportations`:
-              `This means you're fine walking extra ${translocatorWeight} for one less teleportation`" onclick="alert(this.title)">?</span>
+          <div class="editor-line">
+            Select server:
+            <ServerEditor></ServerEditor>
           </div>
-          <button @click="onButtonClick" class="calculate-button">Calculate</button>
+          <div class="editor-line">
+            From:
+            <CoordinateInput v-model="from"></CoordinateInput>
+          </div>
+          <div class="editor-line">
+            To:
+            <CoordinateInput v-model="to"></CoordinateInput>
+          </div>
+          <div class="editor-line">
+            More teleporting <input :disabled="store.isEditingServer" type="range" min="0" max="1000"
+              v-model.number="translocatorWeight"> more walking.
+            <span>(Translocator weight {{ translocatorWeight }})</span>
+            <span class="help-tooltip" :title="translocatorWeight === 0 ? `0 means you don't want any extra walking for less teleportations` :
+              `This means you're fine walking extra ${translocatorWeight} for one less teleportation`"
+              onclick="alert(this.title)">?</span>
+          </div>
+          <button :disabled="store.isEditingServer" @click="onButtonClick" class="calculate-button">Calculate</button>
           <div v-if="isCalculating" class="progress">
             <p>{{ progressType }}: {{ progress.toFixed(1) }}%</p>
           </div>
@@ -194,5 +197,8 @@ input {
   margin-left: 2px;
   margin-right: 2px;
   cursor: help;
+}
+.editor-line {
+  padding-bottom: 5px;
 }
 </style>

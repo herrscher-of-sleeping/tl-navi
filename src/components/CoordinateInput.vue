@@ -1,7 +1,9 @@
 <script lang="ts">
 import { Multiselect } from 'vue-multiselect'
 import { type Value } from "../types";
-import { defineComponent, inject, watch, ref, computed, type Ref, nextTick } from 'vue';
+import { defineComponent, watch, ref, computed, type Ref, nextTick } from 'vue';
+import { store } from "../store";
+import * as types from "../pathfinder/types";
 
 export default defineComponent({
   components: {
@@ -14,18 +16,26 @@ export default defineComponent({
     }
   },
   setup(props, { emit }) {
-    const landmarksList = inject("landmarksList") as Ref<Value[]>;
     const options = ref<Value[]>([]);
     const multiselectRef: Ref<null|Multiselect> = ref(null);
     const searchText = ref("");
     const taggable = ref(false);
     const isOpen = ref(false);
 
-    // Watch for changes in landmarksList and update options
     watch(
-      landmarksList,
+      () => store.landmarksGeojson,
       (newLandmarks) => {
-        options.value = newLandmarks; // Update options
+        if (!newLandmarks) {
+          options.value = [];
+          return;
+        }
+        options.value = newLandmarks.features.map((feature: types.LandmarkFeature): Value => {
+          const coords = [feature.geometry.coordinates[0], -feature.geometry.coordinates[1]];
+          return {
+            name: feature.properties.label,
+            coordinates: coords,
+          } as Value;
+        })
       },
       { immediate: true }
     );
@@ -119,6 +129,7 @@ export default defineComponent({
       open,
       close,
       taggable,
+      store,
     };
   }
 });
@@ -126,7 +137,9 @@ export default defineComponent({
 
 <template>
   <multiselect ref="multiselectRef" id="single-select-search" v-model="value"
-  :options="options"
+    :option-height="32"
+    :options="options"
+    :disabled="store.isEditingServer"
     :custom-label="formatLocation"
     :searchable="true"
     :preserveSearch="true"
