@@ -4,6 +4,7 @@ import { ref, type Ref, h, computed } from "vue";
 import CopyIcon from "./icons/IconCopy.vue";
 import TranslocatorIcon from "./icons/IconTranslocator.vue";
 import { emitSignal } from "@/signal";
+import { makeUrl } from "@/url";
 
 const props = defineProps<{
   path: Point[]
@@ -57,7 +58,11 @@ const CoordClickie = (localProps: {pointId: number}) => {
   }
   const openInANewTab = () => {
     const point = props.path[pointId];
-    const url =  `https://map.tops.vintagestory.at/?x=${point[0]}&y=${point[1]}&zoom=11`;
+    const url = makeUrl(point);
+    if (url === "") {
+      alert("Map URL is not set in settings");
+      return;
+    }
     window.open(url, "_blank");
   }
   let copyButton = null;

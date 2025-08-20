@@ -3,15 +3,9 @@ import { ref, type Ref } from "vue";
 import { type Point } from "@/pathfinder/types";
 import { subscribe } from "@/signal";
 import { store } from "@/store";
+import { makeUrl } from "@/url";
 
 const coords: Ref<null|Point> = ref(null);
-
-const makeUrl = (coords: null|Point) => {
-  if (coords !== null) {
-    return `${store.mapLink}/?x=${coords[0]}&y=${coords[1]}&zoom=${store.zoom}`;
-  }
-  return "";
-}
 
 function getDisplayStyle(coords: null|Point) {
   return coords === null ? "none" : "";
