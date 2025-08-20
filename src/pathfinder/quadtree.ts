@@ -1,5 +1,5 @@
 // QuadTree implementation in TypeScript
-type Point = [number, number];
+type Point = [number, number] | [number, number, number];
 
 class AABB {
   start: Point;

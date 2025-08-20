@@ -197,8 +197,9 @@ async function *findPath(geojson: TranslocatorsGeojson, config: BuildGraphConfig
   yield "Building node list";
   for (let i = 0; i < tlPairList.length; i++) {
     const pair = tlPairList[i];
-    nodes.push(pair.geometry.coordinates[0]);
-    nodes.push(pair.geometry.coordinates[1]);
+    const coords = pair.geometry.coordinates;
+    nodes.push([coords[0][0], coords[0][1], pair.properties.depth1]);
+    nodes.push([coords[1][0], coords[1][1], pair.properties.depth2]);
     quadTree.insert(pair.geometry.coordinates[0], i * 2);
     quadTree.insert(pair.geometry.coordinates[1], i * 2 + 1);
     if (i % 1000 === 0) {

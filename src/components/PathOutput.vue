@@ -12,6 +12,7 @@ const props = defineProps<{
 const activeElement: Ref<null|number> = ref(null);
 const activePoint: Ref<null|Point> = ref(null);
 const copyInput = ref();
+const showDepth = ref(false);
 
 function isSamePoint(a: Point|null, b: Point|null) {
   if (a === null || b === null) { return false; }
@@ -94,7 +95,7 @@ const CoordClickie = (localProps: {pointId: number}) => {
         },
         [
         tlIcon,
-          `[${props.path[Number(localProps["pointId"])][0]}, ${-props.path[Number(localProps["pointId"])][1]}]`,
+          `[${props.path[Number(localProps["pointId"])][0]}, ${(showDepth.value && props.path[Number(localProps["pointId"])][2])? props.path[Number(localProps["pointId"])][2] + ", " : ""}${-props.path[Number(localProps["pointId"])][1]}]`,
         ]
       ),
       copyButton
@@ -139,7 +140,8 @@ const getClassByTravelDistance = (distance: number) => {
   <input style="display:none" ref="copyInput">
   <div class="list" v-if="path.length > 0">
     <div>
-      {{ props.path.length / 2 - 1 }} translocator jumps; approximate walk distance: {{ totalDistance }} blocks
+      {{ props.path.length / 2 - 1 }} translocator jumps; approximate walk distance: {{ totalDistance }} blocks.
+      Show TL depths: <input type="checkbox" v-model="showDepth">
       <ul id="path">
         <li v-for="(distance, index) in distances" :key="index">
           Walk <span :class="getClassByTravelDistance(distance)">{{ distance }}</span> blocks
