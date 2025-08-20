@@ -165,16 +165,16 @@ function *buildGraph(nodes: Point[], quadTree: QT.QuadTree, config: BuildGraphCo
       graph.addEdge(i + 1, i, translocatorWeight);
     }
 
-    let closePoints = quadTree.queryRange(new QT.AABB([nodes[i][0] - queryExpansionStartDist, nodes[i][1] - queryExpansionStartDist], queryExpansionStartDist * 2));
-    if (config.enableQuadTreeQueryExpansion && closePoints.length < 10) {
-      closePoints = quadTree.queryRange(new QT.AABB([nodes[i][0] - queryExpansionStartDist, nodes[i][1] - queryExpansionStartDist], queryExpansionStartDist * 10));
+    let queryWidth = queryExpansionStartDist;
+    let closePoints: [QT.Point, number][] = [];
+    const MAX_ATTEMPTS = 5;
+    let attempts = 0;
+    while (closePoints.length < 10 && attempts < MAX_ATTEMPTS) {
+      closePoints = quadTree.queryRange(new QT.AABB([nodes[i][0] - queryWidth, nodes[i][1] - queryWidth], queryWidth * 2));
+      queryWidth *= 5;
+      attempts++;
     }
-    if (config.enableQuadTreeQueryExpansion && closePoints.length < 10) {
-      closePoints = quadTree.queryRange(new QT.AABB([nodes[i][0] - queryExpansionStartDist, nodes[i][1] - queryExpansionStartDist], queryExpansionStartDist * 100));
-    }
-    if (config.enableQuadTreeQueryExpansion && closePoints.length < 10) {
-      closePoints = quadTree.queryRange(new QT.AABB([nodes[i][0] - queryExpansionStartDist, nodes[i][1] - queryExpansionStartDist], queryExpansionStartDist * 1000));
-    }
+
     for (let j = 0; j < closePoints.length; j++) {
       const id = closePoints[j][1];
       if (id === i) {
