@@ -12,6 +12,12 @@ a,
   }
 }
 
+/* Safe palette from https://github.com/CartoDB/cartocolor
+.colors {
+  color: #88CCEE, #CC6677,#DDCC77,#117733,#332288,#AA4499,#44AA99,#999933,#882255,#661100,#6699CC,#888888
+}
+*/
+
 @media (prefers-color-scheme: dark) {
   :root {
     --text-color: white;
@@ -55,20 +61,17 @@ a,
     stroke: #FFA0FF;
   }
 
-  .travel-distance-short{
-    color: green;
+  .travel-distance-short {
+    color: #44AA99;
+    font-weight: bold;
   }
-  .travel-distance-medium{
-    color: yellowgreen;
+  .travel-distance-medium {
+    color: #999933;
+    font-weight: bold;
   }
-  .travel-distance-long{
-    color: yellow;
-  }
-  .travel-distance-very-long{
-    color: orange;
-  }
-  .travel-distance-insane{
-    color: red;
+  .travel-distance-long {
+    color: #CC6677;
+    font-weight: bold;
   }
 }
 
@@ -95,20 +98,17 @@ a,
     stroke: darkviolet;
   }
 
-  .travel-distance-short{
-    color: #00AA90;
+  .travel-distance-short {
+    color: #117733;
+    font-weight: bolder;
   }
-  .travel-distance-medium{
-    color: #608020;
+  .travel-distance-medium {
+    color: #999933;
+    font-weight: bolder;
   }
-  .travel-distance-long{
-    color: #906000;
-  }
-  .travel-distance-very-long{
-    color: #A03000;
-  }
-  .travel-distance-insane{
-    color: #F00000;
+  .travel-distance-long {
+    color: #882255;
+    font-weight: bold;
   }
 }
 

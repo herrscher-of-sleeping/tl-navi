@@ -127,16 +127,12 @@ const totalDistance = computed(() => {
 })
 
 const getClassByTravelDistance = (distance: number) => {
-  if (distance < 100) {
+  if (distance < 200) {
     return "travel-distance-short";
-  } else if (distance < 500) {
-    return "travel-distance-medium";
   } else if (distance < 1000) {
-    return "travel-distance-long";
-  } else if (distance < 2000) {
-    return "travel-distance-very-long";
+    return "travel-distance-medium";
   }
-  return "travel-distance-insane";
+  return "travel-distance-long";
 }
 
 </script>
