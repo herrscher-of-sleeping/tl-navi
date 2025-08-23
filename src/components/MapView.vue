@@ -27,26 +27,3 @@ subscribe("set-display-point", function(point: Point|null) {
     <iframe :src="makeUrl(coords)" frameborder="0" style="width: 100%; height: 100%; display: block; position: absolute; top: 0; left: 0;"></iframe>
   </div>
 </template>
-
-<style lang="css" scoped>
-@media (prefers-color-scheme: dark) {
-  .zoom-select-container {
-    background: #222;
-    color: white;
-  }
-}
-@media (prefers-color-scheme: light) {
-  .zoom-select-container {
-    background: white;
-    color: black;
-  }
-}
-.zoom-select-container {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  z-index: 10000;
-  padding: 5px;
-  border-radius: 4px;
-}
-</style>

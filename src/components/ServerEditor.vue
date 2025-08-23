@@ -124,6 +124,7 @@ const startEditing = () => {
       :options="store.serverList"
       :searchable="false"
       :allow-empty="false"
+      :showLabels="false"
     ></multiselect> <button @click="startEditing">Configure</button> <button :class="{ hidden: !store.isEditingServer }" @click="saveData">Save</button> <button :class="{ hidden: !store.isEditingServer }" @click="cancel">Cancel</button>
     <div class="server-editor" :class="{ hidden: !store.isEditingServer }">
       <div><button @click="clearFields">Clear</button> <button @click="deleteCurrent">Delete</button></div>
@@ -143,33 +144,14 @@ const startEditing = () => {
 input, button {
   margin-bottom: 5px;
 }
-@media (prefers-color-scheme: dark) {
-  input {
-    background-color: transparent;
-    color: white;
-    border-radius: 5px;
-  }
-
-  .server-editor {
-    border-color: white;
-  }
-}
 
 .server-editor {
-  border-style: solid;
-  border-width: 1px;
-  border-radius: 5px;
-  border-color: #e8e8e8;
   padding: 5px;
 }
 
 input[type=text] {
   width: calc(100% - 10px);
   min-height: 32px;
-  border-color: #e8e8e8;
-  border-style: solid;
-  border-width: 1px;
-  border-radius: 5px;
 }
 
 .hidden {
@@ -180,4 +162,5 @@ input[type=text] {
   display: inline-block;
   max-width: 400px;
 }
+
 </style>

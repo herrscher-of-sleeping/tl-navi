@@ -14,45 +14,16 @@ a,
 
 @media (prefers-color-scheme: dark) {
   :root {
-    background-color: #303030;
-    color: white;
-  }
-
-  a {
-    color: aqua;
-  }
-
-  a:visited {
-    color: chocolate;
-  }
-
-  .footer {
-    background-color: #303030;
-  }
-
-  .multiselect .multiselect__tags {
-    background-color: #303030;
-    color: white;
-  }
-
-  .multiselect__tags .multiselect__single {
-    background-color: #303030;
-    color: white;
-  }
-
-  .multiselect .multiselect__input {
-    background-color: #303030;
-    color: white;
-  }
-
-  .multiselect .multiselect__content-wrapper {
-    background-color: #303030;
-    color: white;
-  }
-
-  .multiselect .multiselect__option--selected {
-    background-color: #303030;
-    color: white;
+    --text-color: white;
+    --placeholder-text-color: gray;
+    --background-color: #303030;
+    --link-color: aqua;
+    --visited-link-color: chocolate;
+    --dropdown-active-background-color: #235f44;
+    --dropdown-active-text-color: white;
+    --dropdown-selected-background-color: #EEEEEE;
+    --dropdown-selected-text-color: black;
+    --element: 1px solid #777777;
   }
 
   .tl-navi-icon * {
@@ -99,21 +70,17 @@ a,
   .travel-distance-insane{
     color: red;
   }
-
-  .zoom-select-container {
-    background: #222;
-    color: white;
-  }
 }
 
 @media (prefers-color-scheme: light) {
   :root {
-    background-color: white;
-    color: black;
-  }
-
-  .footer {
-    background-color: white;
+    --background-color: white;
+    --text-color: black;
+    --dropdown-active-background-color: #41b883;
+    --dropdown-active-text-color: white;
+    --dropdown-selected-background-color: #F0F0F0;
+    --dropdown-selected-text-color: black;
+    --element: 1px solid #555555;
   }
 
   button.coord-clickie {
@@ -143,11 +110,106 @@ a,
   .travel-distance-insane{
     color: #F00000;
   }
+}
 
-  .zoom-select-container {
-    background: white;
-    color: black;
-  }
+/* ================================= */
+:root {
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+a {
+  color: var(--link-color);
+}
+
+a:visited {
+  color: var(--visited-link-color);
+}
+
+.multiselect--disabled .multiselect__current,
+.multiselect--disabled .multiselect__select {
+  background: transparent;
+  color: transparent;
+}
+
+.multiselect--disabled {
+  background: transparent;
+}
+
+.multiselect .multiselect__tags {
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
+.multiselect__tags .multiselect__single {
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
+.multiselect__tags {
+  border: var(--element);
+}
+
+.multiselect .multiselect__input {
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
+.multiselect .multiselect__content-wrapper {
+  background-color: var(--background-color);
+  color: var(--text-color);
+  border: var(--element);
+}
+
+.multiselect .multiselect__option--selected {
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
+.multiselect__option--highlight {
+  background-color: var(--dropdown-active-background-color);
+  color: var(--dropdown-active-text-color);
+}
+
+.multiselect__option--highlight::after {
+  background-color: var(--dropdown-active-background-color);
+  color: var(--dropdown-active-text-color);
+}
+
+.multiselect__input::placeholder {
+  color: var(--text-color);
+}
+
+.multiselect__option--selected, multiselect__option--selected::after {
+  background-color: var(--dropdown-selected-background-color) !important;
+  color: var(--dropdown-selected-text-color) !important;
+}
+
+.multiselect__option--selected:hover, multiselect__option--selected::after:hover {
+  background-color: var(--dropdown-selected-background-color) !important;
+  color: var(--dropdown-selected-text-color) !important;
+}
+
+.zoom-select-container {
+  background: var(--background-color);
+  color: var(--text-color);
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 10000;
+  padding: 5px;
+  border-radius: 5px;
+}
+
+.server-editor {
+  border: var(--element);
+  border-radius: 5px;
+}
+
+.server-editor input[type=text] {
+  border: var(--element);
+  border-radius: 5px;
+  background-color: transparent;
+  color: var(--text-color)
 }
 
 .tl-navi-icon-translocator {
@@ -156,26 +218,9 @@ a,
 
 button, input[type=file]::file-selector-button {
   min-height: 32px;
-  border-color: #e8e8e8;
-  border-style: solid;
-  border-width: 1px;
+  border: var(--element);
   border-radius: 5px;
+  background-color: transparent;
+  color: var(--text-color);
 }
-
-@media (prefers-color-scheme: dark) {
-  button, input[type=file]::file-selector-button {
-    border-color: #e8e8e8;
-    background-color: transparent;
-    color: #e8e8e8;
-    border-style: solid;
-  }
-}
-
-.zoom-select-container {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  z-index: 10000;
-  padding: 5px;
-  border-radius: 4px;
-}
+/* ================================= */
