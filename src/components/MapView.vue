@@ -1,33 +1,63 @@
 <script setup lang="ts">
-import { ref, type Ref } from "vue";
+import { ref } from "vue";
 import { type Point } from "@/pathfinder/types";
-import { subscribe } from "@/signal";
+import { subscribe, emitSignal } from "@/signal";
 import { store } from "@/store";
 import { makeUrl } from "@/url";
 
-const coords: Ref<null|Point> = ref(null);
 const isOverlayVisible = ref(true);
 
-function getDisplayStyle(coords: null|Point) {
+function getDisplayStyle(coords: null | Point) {
   return coords === null ? "none" : "";
 }
 
-subscribe("set-display-point", function(point: Point|null) {
-  coords.value = point;
+subscribe("set-display-point", function (point: Point | null) {
+  store.coords = point;
   isOverlayVisible.value = true;
 });
+
+function closeMapView() {
+  emitSignal("set-display-point", null);
+}
 </script>
 
 <template>
-  <div v-if="store.mapLink" id="map" :style="{display: getDisplayStyle(coords), height: '100vh', position: 'relative'}">
+  <div
+    v-if="store.mapLink"
+    id="map"
+    :style="{
+      display: getDisplayStyle(store.coords),
+      height: '100vh',
+      position: 'relative',
+    }"
+  >
     <div class="zoom-select-container">
-      Zoom: <select v-model="store.zoom">
-        <option v-for="zoom in 11" :key="zoom" :value="zoom">{{ zoom }}</option>
-      </select>
+      <span class="zoom-select-group">
+        Zoom:
+        <select class="zoom-select" v-model="store.zoom">
+          <option v-for="zoom in 11" :key="zoom" :value="zoom">{{ zoom }}</option>
+        </select>
+      </span>
+      <button class="close-button" @click="closeMapView">Close map view</button>
     </div>
 
-    <iframe :src="makeUrl(coords)" frameborder="0" style="width: 100%; height: 100%; display: block; position: absolute; top: 0; left: 0;"></iframe>
-    <div class="overlay" :class="{'overlay-hidden': !isOverlayVisible }" @click="isOverlayVisible=false">
+    <iframe
+      :src="makeUrl(store.coords)"
+      frameborder="0"
+      style="
+        width: 100%;
+        height: 100%;
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 0;
+      "
+    ></iframe>
+    <div
+      class="overlay"
+      :class="{ 'overlay-hidden': !isOverlayVisible }"
+      @click="isOverlayVisible = false"
+    >
       <div class="map-target"></div>
       <div class="map-target map-target-inside-dot"></div>
     </div>
@@ -64,6 +94,6 @@ subscribe("set-display-point", function(point: Point|null) {
 .map-target-inside-dot {
   padding: 2px;
   border-radius: 2px;
-  background-color: white
+  background-color: white;
 }
 </style>

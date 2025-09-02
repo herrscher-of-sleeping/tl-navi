@@ -23,6 +23,7 @@ a,
     --text-color: white;
     --placeholder-text-color: gray;
     --background-color: #303030;
+    --button-background-color-hover: #424242;
     --link-color: aqua;
     --visited-link-color: chocolate;
     --dropdown-active-background-color: #235f44;
@@ -78,6 +79,7 @@ a,
 @media (prefers-color-scheme: light) {
   :root {
     --background-color: white;
+    --button-background-color-hover: #EEEEEE;
     --text-color: black;
     --dropdown-active-background-color: #41b883;
     --dropdown-active-text-color: white;
@@ -193,11 +195,31 @@ a:visited {
   background: var(--background-color);
   color: var(--text-color);
   position: absolute;
-  top: 10px;
-  left: 10px;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  height: 33px;
   z-index: 10000;
   padding: 5px;
+  border-radius: 0px;
+}
+
+.zoom-select-group {
+  top: 9px;
+  position: fixed;
+}
+
+.zoom-select {
+  background-color: var(--background-color);
+  color: var(--text-color);
+  border: var(--element);
   border-radius: 5px;
+}
+
+.close-button {
+  right: 10px;
+  top: 5px;
+  position: fixed;
 }
 
 .server-editor {
@@ -209,7 +231,7 @@ a:visited {
   border: var(--element);
   border-radius: 5px;
   background-color: transparent;
-  color: var(--text-color)
+  color: var(--text-color);
 }
 
 .tl-navi-icon-translocator {
@@ -222,5 +244,9 @@ button, input[type=file]::file-selector-button {
   border-radius: 5px;
   background-color: transparent;
   color: var(--text-color);
+}
+
+button:hover, select:hover {
+  background-color: var(--button-background-color-hover);
 }
 /* ================================= */

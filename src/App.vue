@@ -12,6 +12,10 @@ import { store } from "./store";
 
 type Point = types.Point;
 
+function _isMobile() {
+  return window.innerWidth < 1500 || window.innerWidth < window.innerHeight;
+}
+
 const from = ref<Value|null>({coordinates: [0, 0]});
 const to = ref<Value|null>({coordinates: [0, 0]});
 const isCalculating = ref(false);
@@ -21,6 +25,7 @@ const path = ref<types.Point[]>([]);
 const maxWalkDistance = ref(1000);
 const translocatorWeight = ref(300);
 const coords: Ref<Point|null> = ref(null);
+const isMobile = ref(_isMobile());
 
 subscribe("set-display-point", function(point: Point|null) {
   coords.value = point;
@@ -85,12 +90,18 @@ function handleEnterKey(event: KeyboardEvent) {
   }
 }
 
+const handleResize = () => {
+  isMobile.value = _isMobile();
+};
+
 onMounted(async () => {
   window.addEventListener('keydown', handleEnterKey);
+  window.addEventListener('resize', handleResize);
 });
 
 onUnmounted(async () => {
   window.removeEventListener('keydown', handleEnterKey);
+  window.removeEventListener('resize', handleResize);
 })
 
 </script>
@@ -132,7 +143,7 @@ onUnmounted(async () => {
           <PathOutput :path="path"></PathOutput>
         </div>
       </div>
-      <div class="right">
+      <div :class="{ right: !isMobile, 'map-popup': isMobile }" :style="{ display: store.coords === null? 'none': 'block' }">
         <MapView></MapView>
       </div>
     </div>
@@ -166,6 +177,14 @@ html, body, #root {
 }
 .right {
   flex: 1;
+}
+.map-popup {
+  position: fixed;
+  left: 0px;
+  right: 0px;
+  top: 0px;
+  bottom: 0px;
+  z-index: 1000;
 }
 
 li {
