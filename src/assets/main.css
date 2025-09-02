@@ -45,12 +45,12 @@ a,
     background: white;
   }
 
-  button.coord-clickie {
+  span.coord-clickie {
     background-color: #222222;
     color: lightblue;
   }
 
-  button.coord-clickie-active {
+  span.coord-clickie-active {
     color: violet;
   }
 
