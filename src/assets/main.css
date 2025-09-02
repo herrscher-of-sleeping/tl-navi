@@ -88,11 +88,11 @@ a,
     --element: 1px solid #555555;
   }
 
-  button.coord-clickie {
+  span.coord-clickie {
     color: blue;
   }
 
-  button.coord-clickie-active {
+  span.coord-clickie-active {
     color: darkviolet;
   }
 

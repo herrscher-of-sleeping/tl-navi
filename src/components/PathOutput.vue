@@ -41,10 +41,21 @@ function copyCommand(point0: Point, point1: Point) {
   navigator.clipboard.writeText(copyInput.value.value);
 }
 
+const buildCoordinates = (localProps: {pointId: number}) => {
+  const x = props.path[Number(localProps["pointId"])][0];
+  const z = -props.path[Number(localProps["pointId"])][1];
+  const y = showDepth.value ? props.path[Number(localProps["pointId"])][2] : null;
+  return `${x},${y ? y + ",": ""}${z}`;
+}
+
 const CoordClickie = (localProps: {pointId: number}) => {
   const pointId = Number(localProps["pointId"]);
   const point = props.path[pointId];
   const onClick = () => {
+    const selection = window.getSelection();
+    if (selection && selection.toString().length > 0) {
+      return;
+    }
     const id = Number(pointId)
     if (id === activeElement.value) {
       activeElement.value = null;
@@ -85,7 +96,7 @@ const CoordClickie = (localProps: {pointId: number}) => {
     {},
     [
       h(
-        "button",
+        "span",
         {
           onClick: onClick,
           onMousedown: (event: MouseEvent) => {
@@ -100,7 +111,7 @@ const CoordClickie = (localProps: {pointId: number}) => {
         },
         [
         tlIcon,
-          `[${props.path[Number(localProps["pointId"])][0]}, ${(showDepth.value && props.path[Number(localProps["pointId"])][2])? props.path[Number(localProps["pointId"])][2] + ", " : ""}${-props.path[Number(localProps["pointId"])][1]}]`,
+          buildCoordinates(localProps),
         ]
       ),
       copyButton
