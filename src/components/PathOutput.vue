@@ -5,6 +5,7 @@ import CopyIcon from "./icons/IconCopy.vue";
 import TranslocatorIcon from "./icons/IconTranslocator.vue";
 import { emitSignal } from "@/signal";
 import { makeUrl } from "@/url";
+import { store } from "@/store";
 
 const props = defineProps<{
   path: Point[]
@@ -20,10 +21,51 @@ function isSamePoint(a: Point|null, b: Point|null) {
   return a[0] === b[0] && a[1] === b[1];
 }
 
+function getAngle(a: Point, b: Point): number {
+  const vec = [b[0] - a[0], b[1] - a[1]];
+  if (vec[1] > 0) {
+    if (vec[0] === 0) {
+      return Math.PI * 0.5;
+    }
+    return Math.atan2(-vec[1], vec[0]);
+  }
+  if (vec[0] === 0) {
+    return Math.PI * 1.5;
+  }
+  return Math.atan2(-vec[1], vec[0]);
+}
+
+function calculateAngleIn(i: number): number|null {
+  if (i === 0) {
+    return null;
+  }
+  if (isSamePoint(props.path[i], props.path[i - 1])) {
+    return null;
+  }
+  return getAngle(props.path[i - 1], props.path[i]);
+}
+
+function calculateAngleOut(i: number): number|null {
+  if (i === props.path.length - 1) {
+    return null;
+  }
+  if (isSamePoint(props.path[i], props.path[i + 1])) {
+    return null;
+  }
+  return getAngle(props.path[i], props.path[i + 1]);
+}
+
 function navigateToPoint(i: number|null) {
   if (i === null) {
     emitSignal("set-display-point", null)
   } else {
+    if (i % 2 === 0) {
+      store.angleOut = calculateAngleOut(i);
+      store.angleIn = null;
+    } else {
+      store.angleOut = null;
+      store.angleIn = calculateAngleIn(i);
+    }
     emitSignal("set-display-point", props.path[i])
   }
 }

@@ -4,6 +4,8 @@ import { type Point } from "@/pathfinder/types";
 import { subscribe, emitSignal } from "@/signal";
 import { store } from "@/store";
 import { makeUrl } from "@/url";
+import IconArrowOut from "./icons/IconArrowOut.vue";
+import IconArrowIn from "./icons/IconArrowIn.vue";
 
 const isOverlayVisible = ref(true);
 
@@ -60,6 +62,8 @@ function closeMapView() {
     >
       <div class="map-target"></div>
       <div class="map-target map-target-inside-dot"></div>
+      <icon-arrow-out v-if="store.angleOut !== null"  class="map-target-arrow" :style="{transform: `translate(-50%, -50%) rotate(${store.angleOut}rad)` }"></icon-arrow-out>
+      <icon-arrow-in v-if="store.angleIn !== null" class="map-target-arrow" :style="{transform: `translate(-50%, -50%) rotate(${store.angleIn}rad)` }"></icon-arrow-in>
     </div>
   </div>
 </template>
@@ -95,5 +99,12 @@ function closeMapView() {
   padding: 2px;
   border-radius: 2px;
   background-color: white;
+}
+
+.map-target-arrow {
+  display: block;
+  position: absolute;
+  top: 50%;
+  left: 50%;
 }
 </style>

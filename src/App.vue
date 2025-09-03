@@ -3,10 +3,9 @@ import { type Value } from "./types";
 import CoordinateInput from './components/CoordinateInput.vue';
 import PathOutput from "./components/PathOutput.vue";
 import MapView from "./components/MapView.vue";
-import { onMounted, onUnmounted, computed, ref, type Ref } from 'vue';
+import { onMounted, onUnmounted, computed, ref } from 'vue';
 import * as types from "./pathfinder/types";
 import { findPath } from "./pathfinder";
-import { subscribe } from "@/signal";
 import ServerEditor from "./components/ServerEditor.vue";
 import { store } from "./store";
 
@@ -24,16 +23,11 @@ const progressType = ref("");
 const path = ref<types.Point[]>([]);
 const maxWalkDistance = ref(1000);
 const translocatorWeight = ref(300);
-const coords: Ref<Point|null> = ref(null);
 const isMobile = ref(_isMobile());
-
-subscribe("set-display-point", function(point: Point|null) {
-  coords.value = point;
-});
 
 const leftPaneClass = computed(() => ({
   left: true,
-  ["left-fullwidth"]: coords.value === null,
+  ["left-fullwidth"]: store.coords === null,
 }))
 
 async function calculatePath(from: Value|null, to: Value|null) {
