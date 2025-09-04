@@ -86,7 +86,7 @@ function getOtherPointScreenOffset(): string {
           <option v-for="zoom in 11" :key="zoom" :value="zoom">{{ zoom }}</option>
         </select>
       </span>
-      <span class="map-overlay-checkbox">Show map overlay<input type="checkbox" v-model="store.showMapOverlay"></span>
+      <span class="map-overlay-checkbox">Overlay<input type="checkbox" v-model="store.showMapOverlay"></span>
       <button class="close-button" @click="closeMapView">Close map view</button>
     </div>
 
