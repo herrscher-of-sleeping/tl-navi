@@ -16,7 +16,7 @@ const props = defineProps({
 const emit = defineEmits(["update:modelValue"]);
 
 const options = ref<Value[]>([]);
-const multiselectRef: Ref<null|Multiselect> = ref(null);
+const multiselectRef: Ref<null|typeof Multiselect> = ref(null);
 const searchText = ref("");
 const taggable = ref(false);
 const isOpen = ref(false);
@@ -48,9 +48,9 @@ const value = computed({
 
 const formatLocation = ({ name, coordinates }: Value) => {
   if (!name) {
-    return coordinates;
+    return `[${coordinates[0]},${coordinates[1]}]`;
   }
-  return `${name} — [${coordinates}]`;
+  return `${name} — [${coordinates[0]},${coordinates[1]}]`;
 };
 
 const parseCoordinates = (str: string): [number, number] | null => {
@@ -107,7 +107,6 @@ const open = () => {
       // multiselectRef.value.search = searchText.value;
       const coordinates = value.value?.coordinates;
       if (coordinates) {
-        // @ts-expect-error property `search` exists, trust me
         multiselectRef.value.search = `${coordinates[0]}, ${coordinates[1]}`;
       }
     }
