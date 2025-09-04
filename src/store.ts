@@ -19,8 +19,11 @@ export const store = reactive({
   isEditingServer: false,
   zoom: 5,
   coords: null as null | types.Point,
+  otherCoords: null as null | types.Point,
   angleIn: null as null | number,
   angleOut: null as null | number,
+  showMapOverlay: false,
+  url: "",
 });
 
 export const formatURL = (userUrlInput?: string): string => {

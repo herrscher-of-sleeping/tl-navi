@@ -1,38 +1,84 @@
 <script setup lang="ts">
-import { ref } from "vue";
 import { type Point } from "@/pathfinder/types";
 import { subscribe, emitSignal } from "@/signal";
 import { store } from "@/store";
 import { makeUrl } from "@/url";
 import IconArrowOut from "./icons/IconArrowOut.vue";
 import IconArrowIn from "./icons/IconArrowIn.vue";
-
-const isOverlayVisible = ref(true);
+import MapFrame from "./MapFrame.vue";
+import { watch, ref } from "vue";
 
 function getDisplayStyle(coords: null | Point) {
   return coords === null ? "none" : "";
 }
 
+const reloadKey = ref(0);
+
 subscribe("set-display-point", function (point: Point | null) {
   store.coords = point;
-  isOverlayVisible.value = true;
+  store.showMapOverlay = true;
+  store.url = makeUrl(store.coords);
 });
+
+watch(
+  () => store.showMapOverlay,
+  (value: boolean) => {
+    if (value && store.coords) {
+      reloadKey.value++;
+    }
+  }
+);
+
+watch(
+  () => store.zoom,
+  () => {
+    store.url = makeUrl(store.coords);
+  }
+)
 
 function closeMapView() {
   emitSignal("set-display-point", null);
 }
+
+const zoomCoef = [
+  1 / 256,
+  1 / 128,
+  1 / 64,
+  1 / 32,
+  1 / 16,
+  1 / 8,
+  1 / 4,
+  1 / 2,
+  1,
+  2,
+  4,
+  8
+];
+
+function getOtherPointScreenOffset(): string {
+  if (store.otherCoords === null || store.coords === null) {
+    return "";
+  }
+  if (store.zoom < 5) {
+    return "";
+  }
+  const zoom: number | undefined = zoomCoef[store.zoom];
+  if (!zoom) {
+    return "";
+  }
+  const offset = [store.otherCoords[0] - store.coords[0], store.otherCoords[1] - store.coords[1]];
+  const scaledOffset = [offset[0] * zoom, -offset[1] * zoom];
+  return `translate(${scaledOffset[0]}px,${scaledOffset[1]}px)`;
+}
+
 </script>
 
 <template>
-  <div
-    v-if="store.mapLink"
-    id="map"
-    :style="{
-      display: getDisplayStyle(store.coords),
-      height: '100vh',
-      position: 'relative',
-    }"
-  >
+  <div v-if="store.mapLink" id="map" :style="{
+    display: getDisplayStyle(store.coords),
+    height: '100vh',
+    position: 'relative',
+  }">
     <div class="zoom-select-container">
       <span class="zoom-select-group">
         Zoom:
@@ -40,12 +86,11 @@ function closeMapView() {
           <option v-for="zoom in 11" :key="zoom" :value="zoom">{{ zoom }}</option>
         </select>
       </span>
+      <span class="map-overlay-checkbox">Show map overlay<input type="checkbox" v-model="store.showMapOverlay"></span>
       <button class="close-button" @click="closeMapView">Close map view</button>
     </div>
 
-    <iframe
-      :src="makeUrl(store.coords)"
-      frameborder="0"
+    <MapFrame :src="store.url" frameborder="0" :key="reloadKey"
       style="
         width: 100%;
         height: 100%;
@@ -53,17 +98,20 @@ function closeMapView() {
         position: absolute;
         top: 0;
         left: 0;
-      "
-    ></iframe>
-    <div
-      class="overlay"
-      :class="{ 'overlay-hidden': !isOverlayVisible }"
-      @click="isOverlayVisible = false"
-    >
-      <div class="map-target"></div>
-      <div class="map-target map-target-inside-dot"></div>
-      <icon-arrow-out v-if="store.angleOut !== null"  class="map-target-arrow" :style="{transform: `translate(-50%, -50%) rotate(${store.angleOut}rad)` }"></icon-arrow-out>
-      <icon-arrow-in v-if="store.angleIn !== null" class="map-target-arrow" :style="{transform: `translate(-50%, -50%) rotate(${store.angleIn}rad)` }"></icon-arrow-in>
+      "></MapFrame>
+    <div class="overlay" :class="{ 'overlay-hidden': !store.showMapOverlay }" @click="store.showMapOverlay = false">
+      <div class="map-target">
+        <div class="map-target map-target-inside-dot"></div>
+      </div>
+      <icon-arrow-out v-if="store.angleOut !== null" class="map-target-arrow"
+        :style="{ transform: `translate(-50%, -50%) rotate(${store.angleOut}rad)` }"></icon-arrow-out>
+      <icon-arrow-in v-if="store.angleIn !== null" class="map-target-arrow"
+        :style="{ transform: `translate(-50%, -50%) rotate(${store.angleIn}rad)` }"></icon-arrow-in>
+      <div class="map-target map-target-other" :style="{
+        transform: `translate(-50%, -50%) ${getOtherPointScreenOffset()} !important`,
+      }">
+        <div class="map-target map-target-inside-dot"></div>
+      </div>
     </div>
   </div>
 </template>

@@ -58,13 +58,16 @@ function calculateAngleOut(i: number): number|null {
 function navigateToPoint(i: number|null) {
   if (i === null) {
     emitSignal("set-display-point", null)
+    store.otherCoords = null;
   } else {
     if (i % 2 === 0) {
       store.angleOut = calculateAngleOut(i);
       store.angleIn = null;
+      store.otherCoords = props.path[i + 1];
     } else {
       store.angleOut = null;
       store.angleIn = calculateAngleIn(i);
+      store.otherCoords = props.path[i - 1];
     }
     emitSignal("set-display-point", props.path[i])
   }

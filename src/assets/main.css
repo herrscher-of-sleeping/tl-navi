@@ -216,6 +216,12 @@ a:visited {
   border-radius: 5px;
 }
 
+.map-overlay-checkbox {
+  top: 9px;
+  position: absolute;
+  left: 150px;
+}
+
 .close-button {
   right: 10px;
   top: 5px;
