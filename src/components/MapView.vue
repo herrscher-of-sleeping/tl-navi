@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { type Point } from "@/pathfinder/types";
-import { subscribe, emitSignal } from "@/signal";
-import { store } from "@/store";
+import { store, setDisplayPoint } from "@/store";
 import { makeUrl } from "@/url";
 import IconArrowOut from "./icons/IconArrowOut.vue";
 import IconArrowIn from "./icons/IconArrowIn.vue";
@@ -14,11 +13,6 @@ function getDisplayStyle(coords: null | Point) {
 
 const reloadKey = ref(0);
 
-subscribe("set-display-point", function (point: Point | null) {
-  store.coords = point;
-  store.showMapOverlay = true;
-  store.url = makeUrl(store.coords);
-});
 
 watch(
   () => store.showMapOverlay,
@@ -37,7 +31,7 @@ watch(
 )
 
 function closeMapView() {
-  emitSignal("set-display-point", null);
+  setDisplayPoint(null);
 }
 
 const zoomCoef = [

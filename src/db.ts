@@ -1,5 +1,4 @@
 import Dexie, { type EntityTable } from 'dexie';
-import * as Signal from "./signal";
 
 interface Server {
   name: string,

@@ -3,9 +3,8 @@ import { type Point } from "../pathfinder/types";
 import { ref, type Ref, h, computed } from "vue";
 import CopyIcon from "./icons/IconCopy.vue";
 import TranslocatorIcon from "./icons/IconTranslocator.vue";
-import { emitSignal } from "@/signal";
 import { makeUrl } from "@/url";
-import { store } from "@/store";
+import { store, setDisplayPoint } from "@/store";
 
 const props = defineProps<{
   path: Point[]
@@ -57,7 +56,7 @@ function calculateAngleOut(i: number): number|null {
 
 function navigateToPoint(i: number|null) {
   if (i === null) {
-    emitSignal("set-display-point", null)
+    setDisplayPoint(null);
     store.otherCoords = null;
   } else {
     if (i % 2 === 0) {
@@ -69,7 +68,7 @@ function navigateToPoint(i: number|null) {
       store.angleIn = calculateAngleIn(i);
       store.otherCoords = props.path[i - 1];
     }
-    emitSignal("set-display-point", props.path[i])
+    setDisplayPoint(props.path[i]);
   }
 }
 

@@ -1,7 +1,7 @@
 import { reactive, watch } from "vue";
 import { db } from "./db";
-import * as Signal from "./signal";
 import * as types from "./pathfinder/types";
+import { makeUrl } from "@/url";
 
 export const TOPS_NAME = "TOPS (default)";
 export const TOPS_MAP_URL = "https://map.tops.vintagestory.at";
@@ -46,7 +46,20 @@ export const formatURL = (userUrlInput?: string): string => {
   }
 };
 
-const updateServerInfo = async (serverName: string) => {
+watch(() => store.currentServer, updateServerInfo);
+
+watch(() => store.currentServer,
+  async (newValue: string) => {
+    updateServerInfo(newValue);
+  }
+);
+
+export function setServerValueOrDefault(currentServer: undefined|string = undefined) {
+  const localStorageCurrentServer = currentServer || localStorage.getItem("currentServer") || TOPS_NAME;
+  store.currentServer = localStorageCurrentServer;
+}
+
+export async function updateServerInfo(serverName: string) {
   localStorage.setItem("currentServer", serverName);
   const serverInfo = await db.servers.where("name").equals(serverName).first();
   store.translocatorsGeojson =
@@ -56,30 +69,11 @@ const updateServerInfo = async (serverName: string) => {
   store.mapLink = formatURL(serverInfo?.url);
 };
 
-watch(() => store.currentServer, updateServerInfo);
-
-Signal.subscribe(
-  "serverListUpdated",
-  async function (args: { currentServer?: string } = {}) {
-    const localStorageCurrentServer =
-      args.currentServer || localStorage.getItem("currentServer");
-
-    store.serverList = await getServerList();
-
-    if (
-      localStorageCurrentServer &&
-      store.serverList.indexOf(localStorageCurrentServer) !== -1
-    ) {
-      store.currentServer = localStorageCurrentServer;
-    } else if (
-      !localStorageCurrentServer ||
-      store.serverList.indexOf(localStorageCurrentServer) === -1
-    ) {
-      store.currentServer = store.serverList[0];
-    }
-    updateServerInfo(store.currentServer);
-  },
-);
+export function setDisplayPoint(point: types.Point|null) {
+  store.coords = point;
+  store.showMapOverlay = true;
+  store.url = makeUrl(store.coords);
+}
 
 db.servers.toArray().then(async (value) => {
   try {
@@ -102,5 +96,6 @@ db.servers.toArray().then(async (value) => {
   } catch (error) {
     console.error("Error fetching or storing geojson files:", error);
   }
-  Signal.emitSignal("serverListUpdated");
+
+  setServerValueOrDefault();
 });

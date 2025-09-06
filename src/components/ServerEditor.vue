@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import { Multiselect } from "vue-multiselect";
 import { ref, type Ref } from "vue";
-import { store, TOPS_NAME, formatURL } from "../store";
+import { store, TOPS_NAME, formatURL, setServerValueOrDefault, updateServerInfo } from "../store";
 import { db } from "../db";
-import * as Signal from "../signal";
 import * as types from "../pathfinder/types";
 
 let translocatorsGeojson: undefined|types.TranslocatorsGeojson;
@@ -68,8 +67,8 @@ const saveData = () => {
     translocatorsGeojson: translocatorsGeojson,
     landmarksGeojson: landmarksGeojson,
   });
-  Signal.emitSignal("serverListUpdated", { currentServer: serverName.value });
-  Signal.emitSignal("updateServerInfo", serverName.value);
+  setServerValueOrDefault(serverName.value)
+  updateServerInfo(serverName.value);
   store.isEditingServer = false;
 }
 
@@ -86,7 +85,7 @@ const deleteCurrent = () => {
     return
   }
   db.servers.where("name").equals(serverName.value).delete();
-  Signal.emitSignal("serverListUpdated");
+  setServerValueOrDefault();
   store.isEditingServer = false;
   store.currentServer = TOPS_NAME;
 }
