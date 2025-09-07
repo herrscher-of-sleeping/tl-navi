@@ -7,16 +7,18 @@ import { makeUrl } from "@/url";
 import { store, setDisplayPoint } from "@/store";
 
 const props = defineProps<{
-  path: Point[]
+  path: Point[];
 }>();
 
-const activeElement: Ref<null|number> = ref(null);
-const activePoint: Ref<null|Point> = ref(null);
+const activeElement: Ref<null | number> = ref(null);
+const activePoint: Ref<null | Point> = ref(null);
 const copyInput = ref();
 const showDepth = ref(false);
 
-function isSamePoint(a: Point|null, b: Point|null) {
-  if (a === null || b === null) { return false; }
+function isSamePoint(a: Point | null, b: Point | null) {
+  if (a === null || b === null) {
+    return false;
+  }
   return a[0] === b[0] && a[1] === b[1];
 }
 
@@ -34,7 +36,7 @@ function getAngle(a: Point, b: Point): number {
   return Math.atan2(-vec[1], vec[0]);
 }
 
-function calculateAngleIn(i: number): number|null {
+function calculateAngleIn(i: number): number | null {
   if (i === 0) {
     return null;
   }
@@ -44,7 +46,7 @@ function calculateAngleIn(i: number): number|null {
   return getAngle(props.path[i - 1], props.path[i]);
 }
 
-function calculateAngleOut(i: number): number|null {
+function calculateAngleOut(i: number): number | null {
   if (i === props.path.length - 1) {
     return null;
   }
@@ -54,7 +56,7 @@ function calculateAngleOut(i: number): number|null {
   return getAngle(props.path[i], props.path[i + 1]);
 }
 
-function navigateToPoint(i: number|null) {
+function navigateToPoint(i: number | null) {
   if (i === null) {
     setDisplayPoint(null);
     store.otherCoords = null;
@@ -85,14 +87,14 @@ function copyCommand(point0: Point, point1: Point) {
   navigator.clipboard.writeText(copyInput.value.value);
 }
 
-const buildCoordinates = (localProps: {pointId: number}) => {
+const buildCoordinates = (localProps: { pointId: number }) => {
   const x = props.path[Number(localProps["pointId"])][0];
   const z = -props.path[Number(localProps["pointId"])][1];
   const y = showDepth.value ? props.path[Number(localProps["pointId"])][2] : null;
-  return `${x},${y ? y + ",": ""}${z}`;
-}
+  return `${x},${y ? y + "," : ""}${z}`;
+};
 
-const CoordClickie = (localProps: {pointId: number}) => {
+const CoordClickie = (localProps: { pointId: number }) => {
   const pointId = Number(localProps["pointId"]);
   const point = props.path[pointId];
   const onClick = () => {
@@ -100,7 +102,7 @@ const CoordClickie = (localProps: {pointId: number}) => {
     if (selection && selection.toString().length > 0) {
       return;
     }
-    const id = Number(pointId)
+    const id = Number(pointId);
     if (id === activeElement.value) {
       activeElement.value = null;
       activePoint.value = null;
@@ -110,7 +112,7 @@ const CoordClickie = (localProps: {pointId: number}) => {
       activePoint.value = point;
       navigateToPoint(id);
     }
-  }
+  };
   const openInANewTab = () => {
     const point = props.path[pointId];
     const url = makeUrl(point);
@@ -119,7 +121,7 @@ const CoordClickie = (localProps: {pointId: number}) => {
       return;
     }
     window.open(url, "_blank");
-  }
+  };
   let copyButton = null;
   if (pointId > 0 && pointId !== props.path.length - 1) {
     copyButton = h(
@@ -129,41 +131,34 @@ const CoordClickie = (localProps: {pointId: number}) => {
           const otherPointId = pointId % 2 ? pointId + 1 : pointId - 1;
           copyCommand(props.path[pointId], props.path[otherPointId]);
         },
-        title: "Copy waypoint command"
+        title: "Copy waypoint command",
       },
       [h(CopyIcon)]
     );
   }
   const tlIcon = pointId === 0 || pointId === props.path.length - 1 ? null : h(TranslocatorIcon);
-  return h(
-    "span",
-    {},
-    [
-      h(
-        "span",
-        {
-          onClick: onClick,
-          onMousedown: (event: MouseEvent) => {
-            if (event.button === 1) {
-              openInANewTab();
-            }
-          },
-          class: {
-            "coord-clickie": true,
-            "coord-clickie-active": isSamePoint(activePoint.value, point)
-          },
+  return h("span", {}, [
+    h(
+      "span",
+      {
+        onClick: onClick,
+        onMousedown: (event: MouseEvent) => {
+          if (event.button === 1) {
+            openInANewTab();
+          }
         },
-        [
-        tlIcon,
-          buildCoordinates(localProps),
-        ]
-      ),
-      copyButton
-    ]
-  )
-}
+        class: {
+          "coord-clickie": true,
+          "coord-clickie-active": isSamePoint(activePoint.value, point),
+        },
+      },
+      [tlIcon, buildCoordinates(localProps)]
+    ),
+    copyButton,
+  ]);
+};
 
-CoordClickie.props = [ "pointId" ];
+CoordClickie.props = ["pointId"];
 
 function getDistance(a: Point, b: Point) {
   return Math.sqrt(Math.pow(a[0] - b[0], 2) + Math.pow(a[1] - b[1], 2));
@@ -175,11 +170,11 @@ const distances = computed(() => {
     result.push(Math.round(getDistance(props.path[i * 2], props.path[i * 2 + 1])));
   }
   return result;
-})
+});
 
 const totalDistance = computed(() => {
   return distances.value.reduce((sum, distance) => sum + distance, 0);
-})
+});
 
 const getClassByTravelDistance = (distance: number) => {
   if (distance < 200) {
@@ -188,21 +183,20 @@ const getClassByTravelDistance = (distance: number) => {
     return "travel-distance-medium";
   }
   return "travel-distance-long";
-}
-
+};
 </script>
 
 <template>
-  <input style="display:none" ref="copyInput">
+  <input style="display: none" ref="copyInput" />
   <div class="list" v-if="path.length > 0">
     <div>
-      {{ props.path.length / 2 - 1 }} translocator jumps; approximate walk distance: {{ totalDistance }} blocks.
-      Show TL depths: <input type="checkbox" v-model="showDepth">
+      {{ props.path.length / 2 - 1 }} translocator jumps; approximate walk distance:
+      {{ totalDistance }} blocks. Show TL depths: <input type="checkbox" v-model="showDepth" />
       <ul id="path">
         <li v-for="(distance, index) in distances" :key="index">
-          Walk <span :class="getClassByTravelDistance(distance)">{{ distance }}</span> blocks
-          from <coord-clickie :point-id="index * 2"></coord-clickie>
-          to <coord-clickie :point-id="index * 2 + 1"></coord-clickie>
+          Walk <span :class="getClassByTravelDistance(distance)">{{ distance }}</span> blocks from
+          <coord-clickie :point-id="index * 2"></coord-clickie> to
+          <coord-clickie :point-id="index * 2 + 1"></coord-clickie>
         </li>
       </ul>
     </div>

@@ -13,7 +13,6 @@ function getDisplayStyle(coords: null | Point) {
 
 const reloadKey = ref(0);
 
-
 watch(
   () => store.showMapOverlay,
   (value: boolean) => {
@@ -28,26 +27,13 @@ watch(
   () => {
     store.url = makeUrl(store.coords);
   }
-)
+);
 
 function closeMapView() {
   setDisplayPoint(null);
 }
 
-const zoomCoef = [
-  1 / 256,
-  1 / 128,
-  1 / 64,
-  1 / 32,
-  1 / 16,
-  1 / 8,
-  1 / 4,
-  1 / 2,
-  1,
-  2,
-  4,
-  8
-];
+const zoomCoef = [1 / 256, 1 / 128, 1 / 64, 1 / 32, 1 / 16, 1 / 8, 1 / 4, 1 / 2, 1, 2, 4, 8];
 
 function getOtherPointScreenOffset(): string {
   if (store.otherCoords === null || store.coords === null) {
@@ -64,15 +50,18 @@ function getOtherPointScreenOffset(): string {
   const scaledOffset = [offset[0] * zoom, -offset[1] * zoom];
   return `translate(${scaledOffset[0]}px,${scaledOffset[1]}px)`;
 }
-
 </script>
 
 <template>
-  <div v-if="store.mapLink" id="map" :style="{
-    display: getDisplayStyle(store.coords),
-    height: '100vh',
-    position: 'relative',
-  }">
+  <div
+    v-if="store.mapLink"
+    id="map"
+    :style="{
+      display: getDisplayStyle(store.coords),
+      height: '100vh',
+      position: 'relative',
+    }"
+  >
     <div class="zoom-select-container">
       <span class="zoom-select-group">
         Zoom:
@@ -80,30 +69,42 @@ function getOtherPointScreenOffset(): string {
           <option v-for="zoom in 11" :key="zoom" :value="zoom">{{ zoom }}</option>
         </select>
       </span>
-      <span class="map-overlay-checkbox">Overlay<input type="checkbox" v-model="store.showMapOverlay"></span>
+      <span class="map-overlay-checkbox"
+        >Overlay<input type="checkbox" v-model="store.showMapOverlay"
+      /></span>
       <button class="close-button" @click="closeMapView">Close map view</button>
     </div>
 
-    <MapFrame :src="store.url" frameborder="0" :key="reloadKey"
-      style="
-        width: 100%;
-        height: 100%;
-        display: block;
-        position: absolute;
-        top: 0;
-        left: 0;
-      "></MapFrame>
-    <div class="overlay" :class="{ 'overlay-hidden': !store.showMapOverlay }" @click="store.showMapOverlay = false">
+    <MapFrame
+      :src="store.url"
+      frameborder="0"
+      :key="reloadKey"
+      style="width: 100%; height: 100%; display: block; position: absolute; top: 0; left: 0"
+    ></MapFrame>
+    <div
+      class="overlay"
+      :class="{ 'overlay-hidden': !store.showMapOverlay }"
+      @click="store.showMapOverlay = false"
+    >
       <div class="map-target">
         <div class="map-target map-target-inside-dot"></div>
       </div>
-      <icon-arrow-out v-if="store.angleOut !== null" class="map-target-arrow"
-        :style="{ transform: `translate(-50%, -50%) rotate(${store.angleOut}rad)` }"></icon-arrow-out>
-      <icon-arrow-in v-if="store.angleIn !== null" class="map-target-arrow"
-        :style="{ transform: `translate(-50%, -50%) rotate(${store.angleIn}rad)` }"></icon-arrow-in>
-      <div class="map-target map-target-other" :style="{
-        transform: `translate(-50%, -50%) ${getOtherPointScreenOffset()} !important`,
-      }">
+      <icon-arrow-out
+        v-if="store.angleOut !== null"
+        class="map-target-arrow"
+        :style="{ transform: `translate(-50%, -50%) rotate(${store.angleOut}rad)` }"
+      ></icon-arrow-out>
+      <icon-arrow-in
+        v-if="store.angleIn !== null"
+        class="map-target-arrow"
+        :style="{ transform: `translate(-50%, -50%) rotate(${store.angleIn}rad)` }"
+      ></icon-arrow-in>
+      <div
+        class="map-target map-target-other"
+        :style="{
+          transform: `translate(-50%, -50%) ${getOtherPointScreenOffset()} !important`,
+        }"
+      >
         <div class="map-target map-target-inside-dot"></div>
       </div>
     </div>

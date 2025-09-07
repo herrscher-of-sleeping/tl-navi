@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import { Multiselect } from 'vue-multiselect'
+import { Multiselect } from "vue-multiselect";
 import { type Value } from "../types";
-import { watch, ref, computed, type Ref, nextTick } from 'vue';
+import { watch, ref, computed, type Ref, nextTick } from "vue";
 import { store } from "../store";
 import * as types from "../pathfinder/types";
-
 
 const props = defineProps({
   modelValue: {
@@ -16,14 +15,14 @@ const props = defineProps({
 const emit = defineEmits(["update:modelValue"]);
 
 const options = ref<Value[]>([]);
-const multiselectRef: Ref<null|typeof Multiselect> = ref(null);
+const multiselectRef: Ref<null | typeof Multiselect> = ref(null);
 const searchText = ref("");
 const taggable = ref(false);
 const isOpen = ref(false);
 
 watch(
   () => store.landmarksGeojson,
-  (newLandmarks) => {
+  newLandmarks => {
     if (!newLandmarks) {
       options.value = [];
       return;
@@ -34,7 +33,7 @@ watch(
         name: feature.properties.label,
         coordinates: coords,
       } as Value;
-    })
+    });
   },
   { immediate: true }
 );
@@ -43,7 +42,7 @@ const value = computed({
   get: () => props.modelValue,
   set: (newValue: Value) => {
     emit("update:modelValue", newValue);
-  }
+  },
 });
 
 const formatLocation = ({ name, coordinates }: Value) => {
@@ -111,15 +110,17 @@ const open = () => {
       }
     }
   });
-}
+};
 
 const close = () => {
   isOpen.value = false;
-}
+};
 </script>
 
 <template>
-  <multiselect ref="multiselectRef" v-model="value"
+  <multiselect
+    ref="multiselectRef"
+    v-model="value"
     :option-height="32"
     :options="options"
     :disabled="store.isEditingServer"
@@ -136,6 +137,7 @@ const close = () => {
     placeholder="Find landmark or enter coordinates"
     label="name"
     track-by="name"
-    aria-label="pick a value">
+    aria-label="pick a value"
+  >
   </multiselect>
 </template>

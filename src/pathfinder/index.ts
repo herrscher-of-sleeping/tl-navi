@@ -2,40 +2,40 @@ import type { Point, TranslocatorsGeojson } from "./types";
 import * as QT from "./quadtree";
 
 export type BuildGraphConfig = {
-  translocatorWeight: number,
-  queryExpansionStartDist: number,
-  enableQuadTreeQueryExpansion: boolean,
-}
+  translocatorWeight: number;
+  queryExpansionStartDist: number;
+  enableQuadTreeQueryExpansion: boolean;
+};
 
 export type SearchConfig = {
-  from: Point,
-  to: Point,
-}
+  from: Point;
+  to: Point;
+};
 
 class Graph {
-  edges: number[][]
-  weights: number[][]
+  edges: number[][];
+  weights: number[][];
 
   constructor(capacity?: number) {
     this.edges = [];
     this.weights = [];
     if (capacity) {
-      this.edges = Array.from({length: capacity});
-      this.weights = Array.from({length: capacity});
+      this.edges = Array.from({ length: capacity });
+      this.weights = Array.from({ length: capacity });
     }
   }
 
   addEdge(from: number, to: number, weight: number) {
     if (!this.edges[from]) {
-      this.edges[from] = []
-      this.weights[from] = []
+      this.edges[from] = [];
+      this.weights[from] = [];
     }
-    this.edges[from].push(to)
-    this.weights[from].push(weight)
+    this.edges[from].push(to);
+    this.weights[from].push(weight);
   }
 
   dijkstraPath(from: number, to: number): number[] {
-    const distances: number[] = []
+    const distances: number[] = [];
     const previous: (number | null)[] = [];
     const queue: number[] = [];
 
@@ -53,7 +53,7 @@ class Graph {
       {
         let minDist = Infinity;
         for (let i = 0; i < queue.length; i++) {
-          const vertex = queue[i]
+          const vertex = queue[i];
           if (distances[vertex] < minDist) {
             minDist = distances[vertex];
             u = vertex;
@@ -64,7 +64,7 @@ class Graph {
 
         for (let i = 0; i < this.edges[u].length; i++) {
           const alt = distances[u] + this.weights[u][i];
-          const v = this.edges[u][i]
+          const v = this.edges[u][i];
           if (alt < distances[v]) {
             distances[v] = alt;
             previous[v] = u;
@@ -78,15 +78,15 @@ class Graph {
     if (previous[u] || u === from) {
       while (u) {
         path.push(u);
-        u = previous[u]
+        u = previous[u];
       }
     }
 
     return path.reverse();
   }
 
-  * dijkstraPathGenerator(from: number, to: number): Generator<number, number[], void> {
-    const distances: number[] = []
+  *dijkstraPathGenerator(from: number, to: number): Generator<number, number[], void> {
+    const distances: number[] = [];
     const previous: (number | null)[] = [];
     const queue: number[] = [];
 
@@ -104,7 +104,7 @@ class Graph {
       {
         let minDist = Infinity;
         for (let i = 0; i < queue.length; i++) {
-          const vertex = queue[i]
+          const vertex = queue[i];
           if (distances[vertex] < minDist) {
             minDist = distances[vertex];
             u = vertex;
@@ -115,7 +115,7 @@ class Graph {
 
         for (let i = 0; i < this.edges[u].length; i++) {
           const alt = distances[u] + this.weights[u][i];
-          const v = this.edges[u][i]
+          const v = this.edges[u][i];
           if (alt < distances[v]) {
             distances[v] = alt;
             previous[v] = u;
@@ -133,7 +133,7 @@ class Graph {
     if (previous[u] || u === from) {
       while (u) {
         path.push(u);
-        u = previous[u]
+        u = previous[u];
       }
     }
 
@@ -147,18 +147,21 @@ function getDistance(point1: Point, point2: Point) {
   // return Math.abs(point1[0] - point2[0]) + Math.abs(point1[1] - point2[1]);
 }
 
-
-function *buildGraph(nodes: Point[], quadTree: QT.QuadTree, config: BuildGraphConfig = {
-  translocatorWeight: 0,
-  enableQuadTreeQueryExpansion: true,
-  queryExpansionStartDist: 2000
-}) {
+function* buildGraph(
+  nodes: Point[],
+  quadTree: QT.QuadTree,
+  config: BuildGraphConfig = {
+    translocatorWeight: 0,
+    enableQuadTreeQueryExpansion: true,
+    queryExpansionStartDist: 2000,
+  }
+) {
   const graph = new Graph(nodes.length);
   const translocatorWeight = config.translocatorWeight;
   const queryExpansionStartDist = config.queryExpansionStartDist;
   for (let i = 0; i < nodes.length; i++) {
     if (i % 1000 === 0) {
-      yield i / nodes.length * 100;
+      yield (i / nodes.length) * 100;
     }
     if (i % 2 === 0) {
       graph.addEdge(i, i + 1, translocatorWeight);
@@ -170,7 +173,9 @@ function *buildGraph(nodes: Point[], quadTree: QT.QuadTree, config: BuildGraphCo
     const MAX_ATTEMPTS = 5;
     let attempts = 0;
     while (closePoints.length < 10 && attempts < MAX_ATTEMPTS) {
-      closePoints = quadTree.queryRange(new QT.AABB([nodes[i][0] - queryWidth, nodes[i][1] - queryWidth], queryWidth * 2));
+      closePoints = quadTree.queryRange(
+        new QT.AABB([nodes[i][0] - queryWidth, nodes[i][1] - queryWidth], queryWidth * 2)
+      );
       queryWidth *= 5;
       attempts++;
     }
@@ -189,7 +194,10 @@ function *buildGraph(nodes: Point[], quadTree: QT.QuadTree, config: BuildGraphCo
   return graph;
 }
 
-async function *findPath(geojson: TranslocatorsGeojson, config: BuildGraphConfig & SearchConfig): AsyncGenerator<string|number, Point[], void> {
+async function* findPath(
+  geojson: TranslocatorsGeojson,
+  config: BuildGraphConfig & SearchConfig
+): AsyncGenerator<string | number, Point[], void> {
   const tlPairList = geojson["features"];
   const nodes: Point[] = [];
   const quadTree = new QT.QuadTree(new QT.AABB([-1000000, -1000000], 2000000));
@@ -203,7 +211,7 @@ async function *findPath(geojson: TranslocatorsGeojson, config: BuildGraphConfig
     quadTree.insert(pair.geometry.coordinates[0], i * 2);
     quadTree.insert(pair.geometry.coordinates[1], i * 2 + 1);
     if (i % 1000 === 0) {
-      yield i / tlPairList.length * 100;
+      yield (i / tlPairList.length) * 100;
     }
   }
 
@@ -220,20 +228,25 @@ async function *findPath(geojson: TranslocatorsGeojson, config: BuildGraphConfig
   quadTree.insert(config.from, startNodeId);
   for (let i = 0; i < nodes.length - 1; i++) {
     const dist = getDistance(nodes[i], config.from);
-    graph.addEdge(i, startNodeId, dist)
-    graph.addEdge(startNodeId, i, dist)
+    graph.addEdge(i, startNodeId, dist);
+    graph.addEdge(startNodeId, i, dist);
   }
   const stopNodeId = nodes.length;
   quadTree.insert(config.to, stopNodeId);
   nodes.push(config.to);
   for (let i = 0; i < nodes.length - 1; i++) {
     const dist = getDistance(nodes[i], config.to);
-    graph.addEdge(i, stopNodeId, dist)
-    graph.addEdge(stopNodeId, i, dist)
+    graph.addEdge(i, stopNodeId, dist);
+    graph.addEdge(stopNodeId, i, dist);
   }
 
   function areLinked(node1: number, node2: number) {
-    if (node1 === startNodeId || node1 === stopNodeId || node2 === startNodeId || node2 === stopNodeId) {
+    if (
+      node1 === startNodeId ||
+      node1 === stopNodeId ||
+      node2 === startNodeId ||
+      node2 === stopNodeId
+    ) {
       return false;
     }
     return Math.abs(node1 - node2) === 1 && Math.min(node1, node2) % 2 === 0;
@@ -257,8 +270,8 @@ async function *findPath(geojson: TranslocatorsGeojson, config: BuildGraphConfig
     const node = path[i];
     const previousNode = path[i - 1];
     if (areLinked(node, previousNode)) {
-      teleportMask[i - 1] = MASK_NORMAL
-      teleportMask[i] = MASK_NORMAL
+      teleportMask[i - 1] = MASK_NORMAL;
+      teleportMask[i] = MASK_NORMAL;
     } else {
       teleportMask[i] = MASK_PASSTHROUGH;
     }
@@ -269,7 +282,7 @@ async function *findPath(geojson: TranslocatorsGeojson, config: BuildGraphConfig
     }
   }
 
-  return path.map((value) => nodes[value]);
+  return path.map(value => nodes[value]);
 }
 
 export { findPath };

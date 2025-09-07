@@ -7,7 +7,7 @@ export const TOPS_NAME = "TOPS (default)";
 export const TOPS_MAP_URL = "https://map.tops.vintagestory.at";
 
 const getServerList = async () => {
-  return (await db.servers.toArray()).map((server) => server.name);
+  return (await db.servers.toArray()).map(server => server.name);
 };
 
 export const store = reactive({
@@ -31,10 +31,7 @@ export const formatURL = (userUrlInput?: string): string => {
     return "";
   }
   let urlWithProtocol = userUrlInput;
-  if (
-    !userUrlInput.startsWith("https://") &&
-    !userUrlInput.startsWith("http://")
-  ) {
+  if (!userUrlInput.startsWith("https://") && !userUrlInput.startsWith("http://")) {
     urlWithProtocol = "https://" + userUrlInput;
   }
   try {
@@ -48,34 +45,34 @@ export const formatURL = (userUrlInput?: string): string => {
 
 watch(() => store.currentServer, updateServerInfo);
 
-watch(() => store.currentServer,
+watch(
+  () => store.currentServer,
   async (newValue: string) => {
     updateServerInfo(newValue);
   }
 );
 
-export function setServerValueOrDefault(currentServer: undefined|string = undefined) {
-  const localStorageCurrentServer = currentServer || localStorage.getItem("currentServer") || TOPS_NAME;
+export function setServerValueOrDefault(currentServer: undefined | string = undefined) {
+  const localStorageCurrentServer =
+    currentServer || localStorage.getItem("currentServer") || TOPS_NAME;
   store.currentServer = localStorageCurrentServer;
 }
 
 export async function updateServerInfo(serverName: string) {
   localStorage.setItem("currentServer", serverName);
   const serverInfo = await db.servers.where("name").equals(serverName).first();
-  store.translocatorsGeojson =
-    serverInfo?.translocatorsGeojson as types.TranslocatorsGeojson;
-  store.landmarksGeojson =
-    serverInfo?.landmarksGeojson as types.LandmarksGeojson;
+  store.translocatorsGeojson = serverInfo?.translocatorsGeojson as types.TranslocatorsGeojson;
+  store.landmarksGeojson = serverInfo?.landmarksGeojson as types.LandmarksGeojson;
   store.mapLink = formatURL(serverInfo?.url);
-};
+}
 
-export function setDisplayPoint(point: types.Point|null) {
+export function setDisplayPoint(point: types.Point | null) {
   store.coords = point;
   store.showMapOverlay = true;
   store.url = makeUrl(store.coords);
 }
 
-db.servers.toArray().then(async (value) => {
+db.servers.toArray().then(async value => {
   try {
     const [translocatorsResponse, landmarksResponse] = await Promise.all([
       fetch("translocators.geojson"),

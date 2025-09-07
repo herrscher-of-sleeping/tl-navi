@@ -1,1 +1,1 @@
-export type Value = {coordinates: [number, number], name?: string};
+export type Value = { coordinates: [number, number]; name?: string };

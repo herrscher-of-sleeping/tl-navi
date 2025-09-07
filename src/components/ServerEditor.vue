@@ -5,20 +5,20 @@ import { store, TOPS_NAME, formatURL, setServerValueOrDefault, updateServerInfo 
 import { db } from "../db";
 import * as types from "../pathfinder/types";
 
-let translocatorsGeojson: undefined|types.TranslocatorsGeojson;
-let landmarksGeojson: undefined|types.LandmarksGeojson;
+let translocatorsGeojson: undefined | types.TranslocatorsGeojson;
+let landmarksGeojson: undefined | types.LandmarksGeojson;
 const serverName: Ref<string> = ref("");
 const serverLink: Ref<string> = ref("");
-const translocatorsInput: Ref<HTMLInputElement|null> = ref(null);
-const landmarksInput: Ref<HTMLInputElement|null> = ref(null);
+const translocatorsInput: Ref<HTMLInputElement | null> = ref(null);
+const landmarksInput: Ref<HTMLInputElement | null> = ref(null);
 
 const onTranslocatorsFileChange = () => {
   const reader = new FileReader();
   const target = translocatorsInput.value as HTMLInputElement;
-  reader.onload = function() {
+  reader.onload = function () {
     const stringValue = reader.result as string;
     try {
-      const jsonValue = JSON.parse(stringValue)
+      const jsonValue = JSON.parse(stringValue);
       if (jsonValue.type === "FeatureCollection" && jsonValue.name === "translocators") {
         translocatorsGeojson = jsonValue;
         return;
@@ -28,19 +28,19 @@ const onTranslocatorsFileChange = () => {
     }
     alert("Please select a corrent translocators.geojson file");
     target.value = "";
-  }
+  };
   if (target.files && target.files[0]) {
     reader.readAsText(target.files[0]);
   }
-}
+};
 
 const onLandmarksFileChange = () => {
   const reader = new FileReader();
   const target = landmarksInput.value as HTMLInputElement;
-  reader.onload = function() {
+  reader.onload = function () {
     const stringValue = reader.result as string;
     try {
-      const jsonValue = JSON.parse(stringValue)
+      const jsonValue = JSON.parse(stringValue);
       if (jsonValue.type === "FeatureCollection" && jsonValue.name === "landmarks") {
         landmarksGeojson = jsonValue;
         return;
@@ -50,11 +50,11 @@ const onLandmarksFileChange = () => {
     }
     alert("Please select a corrent landmarks.geojson file");
     target.value = "";
-  }
+  };
   if (target.files && target.files[0]) {
     reader.readAsText(target.files[0]);
   }
-}
+};
 
 const saveData = () => {
   if (serverName.value === TOPS_NAME) {
@@ -67,51 +67,58 @@ const saveData = () => {
     translocatorsGeojson: translocatorsGeojson,
     landmarksGeojson: landmarksGeojson,
   });
-  setServerValueOrDefault(serverName.value)
+  setServerValueOrDefault(serverName.value);
   updateServerInfo(serverName.value);
   store.isEditingServer = false;
-}
+};
 
 const clearFields = () => {
   serverName.value = "";
   serverLink.value = "";
   translocatorsInput.value!.value = "";
   landmarksInput.value!.value = "";
-}
+};
 
 const deleteCurrent = () => {
   if (serverName.value === TOPS_NAME) {
     alert("Cannot delete default server data!");
-    return
+    return;
   }
   db.servers.where("name").equals(serverName.value).delete();
   setServerValueOrDefault();
   store.isEditingServer = false;
   store.currentServer = TOPS_NAME;
-}
+};
 
 const cancel = () => {
   clearFields();
   store.isEditingServer = false;
-}
+};
 
 const startEditing = () => {
   store.isEditingServer = true;
   serverName.value = store.currentServer;
   serverLink.value = store.mapLink;
   const translocatorsInputTransfer = new DataTransfer();
-  translocatorsInputTransfer.items.add(new File([JSON.stringify(store.translocatorsGeojson)], 'translocators.geojson', { type: "application/json"}));
+  translocatorsInputTransfer.items.add(
+    new File([JSON.stringify(store.translocatorsGeojson)], "translocators.geojson", {
+      type: "application/json",
+    })
+  );
   translocatorsInput.value!.files = translocatorsInputTransfer.files;
   onTranslocatorsFileChange();
 
   if (store.landmarksGeojson) {
     const landmarksInputTransfer = new DataTransfer();
-    landmarksInputTransfer.items.add(new File([JSON.stringify(store.landmarksGeojson)], 'landmarks.geojson', { type: "application/json"}));
+    landmarksInputTransfer.items.add(
+      new File([JSON.stringify(store.landmarksGeojson)], "landmarks.geojson", {
+        type: "application/json",
+      })
+    );
     landmarksInput.value!.files = landmarksInputTransfer.files;
     onLandmarksFileChange();
   }
-}
-
+};
 </script>
 
 <template>
@@ -124,23 +131,55 @@ const startEditing = () => {
       :searchable="false"
       :allow-empty="false"
       :showLabels="false"
-    ></multiselect> <button @click="startEditing">Configure</button> <button :class="{ hidden: !store.isEditingServer }" @click="saveData">Save</button> <button :class="{ hidden: !store.isEditingServer }" @click="cancel">Cancel</button>
+    ></multiselect>
+    <button @click="startEditing">Configure</button>
+    <button :class="{ hidden: !store.isEditingServer }" @click="saveData">Save</button>
+    <button :class="{ hidden: !store.isEditingServer }" @click="cancel">Cancel</button>
     <div class="server-editor" :class="{ hidden: !store.isEditingServer }">
-      <div><button @click="clearFields">Clear</button> <button @click="deleteCurrent">Delete</button></div>
+      <div>
+        <button @click="clearFields">Clear</button> <button @click="deleteCurrent">Delete</button>
+      </div>
       <div>Server name:</div>
-      <div><input v-model="serverName" type="text"></div>
+      <div><input v-model="serverName" type="text" /></div>
       <div>Webmap link (set to get geojson file links and webmap view):</div>
-      <div><input v-model="serverLink" type="text"></div>
-      <div>translocators.geojson: <a v-if="serverLink" :href="formatURL(serverLink) + '/data/geojson/translocators.geojson'">download</a></div>
-      <div><input ref="translocatorsInput" accept=".json, .geojson" id="translocators_file" type="file" @change="onTranslocatorsFileChange"></div>
-      <div>landmarks.geojson: <a v-if="serverLink" :href="formatURL(serverLink) + '/data/geojson/landmarks.geojson'">download</a></div>
-      <div><input ref="landmarksInput" accept=".json, .geojson" id="landmarks_file" type="file" @change="onLandmarksFileChange"></div>
+      <div><input v-model="serverLink" type="text" /></div>
+      <div>
+        translocators.geojson:
+        <a v-if="serverLink" :href="formatURL(serverLink) + '/data/geojson/translocators.geojson'"
+          >download</a
+        >
+      </div>
+      <div>
+        <input
+          ref="translocatorsInput"
+          accept=".json, .geojson"
+          id="translocators_file"
+          type="file"
+          @change="onTranslocatorsFileChange"
+        />
+      </div>
+      <div>
+        landmarks.geojson:
+        <a v-if="serverLink" :href="formatURL(serverLink) + '/data/geojson/landmarks.geojson'"
+          >download</a
+        >
+      </div>
+      <div>
+        <input
+          ref="landmarksInput"
+          accept=".json, .geojson"
+          id="landmarks_file"
+          type="file"
+          @change="onLandmarksFileChange"
+        />
+      </div>
     </div>
   </div>
 </template>
 
 <style lang="css" scoped>
-input, button {
+input,
+button {
   margin-bottom: 5px;
 }
 
@@ -148,7 +187,7 @@ input, button {
   padding: 5px;
 }
 
-input[type=text] {
+input[type="text"] {
   width: calc(100% - 10px);
   min-height: 32px;
 }
@@ -161,5 +200,4 @@ input[type=text] {
   display: inline-block;
   max-width: 400px;
 }
-
 </style>

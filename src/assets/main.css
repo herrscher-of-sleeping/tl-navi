@@ -15,7 +15,7 @@ Used for distance color-coding
     --visited-link-color: chocolate;
     --dropdown-active-background-color: #235f44;
     --dropdown-active-text-color: white;
-    --dropdown-selected-background-color: #EEEEEE;
+    --dropdown-selected-background-color: #eeeeee;
     --dropdown-selected-text-color: black;
     --border: 1px solid #777777;
   }
@@ -45,11 +45,11 @@ Used for distance color-coding
     color: white;
   }
   .tl-navi-icon-translocator path {
-    stroke: #FFA0FF;
+    stroke: #ffa0ff;
   }
 
   .travel-distance-short {
-    color: #44AA99;
+    color: #44aa99;
     font-weight: bold;
   }
   .travel-distance-medium {
@@ -57,7 +57,7 @@ Used for distance color-coding
     font-weight: bold;
   }
   .travel-distance-long {
-    color: #CC6677;
+    color: #cc6677;
     font-weight: bold;
   }
 }
@@ -65,12 +65,12 @@ Used for distance color-coding
 @media (prefers-color-scheme: light) {
   :root {
     --background-color: white;
-    --button-background-color-hover: #EEEEEE;
+    --button-background-color-hover: #eeeeee;
     --text-color: black;
     --link-color: blue;
     --dropdown-active-background-color: #41b883;
     --dropdown-active-text-color: white;
-    --dropdown-selected-background-color: #F0F0F0;
+    --dropdown-selected-background-color: #f0f0f0;
     --dropdown-selected-text-color: black;
     --border: 1px solid #555555;
   }
@@ -168,12 +168,14 @@ a:visited {
   color: var(--text-color);
 }
 
-.multiselect__option--selected, multiselect__option--selected::after {
+.multiselect__option--selected,
+multiselect__option--selected::after {
   background-color: var(--dropdown-selected-background-color) !important;
   color: var(--dropdown-selected-text-color) !important;
 }
 
-.multiselect__option--selected:hover, multiselect__option--selected::after:hover {
+.multiselect__option--selected:hover,
+multiselect__option--selected::after:hover {
   background-color: var(--dropdown-selected-background-color) !important;
   color: var(--dropdown-selected-text-color) !important;
 }
@@ -220,7 +222,7 @@ a:visited {
   border-radius: 5px;
 }
 
-.server-editor input[type=text] {
+.server-editor input[type="text"] {
   border: var(--border);
   border-radius: 5px;
   background-color: transparent;
@@ -231,7 +233,8 @@ a:visited {
   margin-right: 5px;
 }
 
-button, input[type=file]::file-selector-button {
+button,
+input[type="file"]::file-selector-button {
   min-height: 32px;
   border: var(--border);
   border-radius: 5px;
@@ -239,7 +242,9 @@ button, input[type=file]::file-selector-button {
   color: var(--text-color);
 }
 
-button:hover, select:hover, input[type=file]::file-selector-button:hover {
+button:hover,
+select:hover,
+input[type="file"]::file-selector-button:hover {
   background-color: var(--button-background-color-hover);
 }
 /* ================================= */
