@@ -76,12 +76,9 @@ function handleEnterKey(event: KeyboardEvent) {
   if (store.isEditingServer) {
     return;
   }
-  // @ts-expect-error this works, but TODO: track multiselect state or something
   if (
-    document
-      .querySelectorAll(".multiselect__content-wrapper")
-      .entries()
-      .every(item => item[1].style.display === "none")
+    // @ts-expect-error this works, but TODO: track multiselect state or something
+    document.querySelectorAll(".multiselect__content-wrapper").entries().every(item => item[1].style.display === "none")
   ) {
     if (event.key === "Enter") {
       calculatePath(from.value, to.value);

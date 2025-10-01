@@ -106,6 +106,7 @@ const open = () => {
       // multiselectRef.value.search = searchText.value;
       const coordinates = value.value?.coordinates;
       if (coordinates) {
+        // @ts-expect-error search exists
         multiselectRef.value.search = `${coordinates[0]}, ${coordinates[1]}`;
       }
     }
