@@ -4,6 +4,7 @@ import { ref, type Ref } from "vue";
 import { store, TOPS_NAME, formatURL, setServerValueOrDefault, updateServerInfo } from "../store";
 import { db } from "../db";
 import * as types from "../pathfinder/types";
+import SettingsIcon from "./icons/IconSettings.vue";
 
 let translocatorsGeojson: undefined | types.TranslocatorsGeojson;
 let landmarksGeojson: undefined | types.LandmarksGeojson;
@@ -124,7 +125,7 @@ const startEditing = () => {
 <template>
   <div>
     <multiselect
-      class="server-select"
+      :class="{'server-select': true, tlNaviButton: true}"
       v-model="store.currentServer"
       :disabled="store.isEditingServer"
       :options="store.serverList"
@@ -132,10 +133,10 @@ const startEditing = () => {
       :allow-empty="false"
       :showLabels="false"
     ></multiselect>
-    <button @click="startEditing">Configure</button>
-    <button :class="{ hidden: !store.isEditingServer }" @click="saveData">Save</button>
-    <button :class="{ hidden: !store.isEditingServer }" @click="cancel">Cancel</button>
-    <div class="server-editor" :class="{ hidden: !store.isEditingServer }">
+    <button :class="{ tlNaviButton: true }" @click="startEditing" title="Configure servers"><SettingsIcon></SettingsIcon></button>
+    <button :class="{ tlNaviButton: true, hidden: !store.isEditingServer }" @click="saveData">Save</button>
+    <button :class="{ tlNaviButton: true, hidden: !store.isEditingServer }" @click="cancel">Cancel</button>
+    <div class="server-editor" :class="{ hidden: !store.isEditingServer }" :style="{ marginTop: '5px' }">
       <div>
         <button @click="clearFields">Clear</button> <button @click="deleteCurrent">Delete</button>
       </div>
@@ -199,5 +200,9 @@ input[type="text"] {
 .server-select {
   display: inline-block;
   max-width: 400px;
+}
+
+.tlNaviButton {
+  margin-right: 5px;
 }
 </style>
