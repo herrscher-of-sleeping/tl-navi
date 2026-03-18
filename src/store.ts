@@ -11,7 +11,7 @@ const getServerList = async () => {
 };
 
 export const store = reactive({
-  serverList: [] as string[],
+  serverList: await getServerList() as string[],
   currentServer: "",
   translocatorsGeojson: null as types.TranslocatorsGeojson | null,
   landmarksGeojson: null as types.LandmarksGeojson | null,
