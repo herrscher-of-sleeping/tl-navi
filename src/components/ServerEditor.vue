@@ -1,10 +1,8 @@
 <script setup lang="ts">
-import { Multiselect } from "vue-multiselect";
 import { ref, type Ref } from "vue";
 import { store, TOPS_NAME, formatURL, setServerValueOrDefault, updateServerInfo } from "../store";
 import { db } from "../db";
 import * as types from "../pathfinder/types";
-import SettingsIcon from "./icons/IconSettings.vue";
 
 let translocatorsGeojson: undefined | types.TranslocatorsGeojson;
 let landmarksGeojson: undefined | types.LandmarksGeojson;
@@ -95,51 +93,11 @@ const cancel = () => {
   clearFields();
   store.isEditingServer = false;
 };
-
-const startEditing = () => {
-  store.isEditingServer = true;
-  serverName.value = store.currentServer;
-  serverLink.value = store.mapLink;
-  const translocatorsInputTransfer = new DataTransfer();
-  translocatorsInputTransfer.items.add(
-    new File([JSON.stringify(store.translocatorsGeojson)], "translocators.geojson", {
-      type: "application/json",
-    })
-  );
-  translocatorsInput.value!.files = translocatorsInputTransfer.files;
-  onTranslocatorsFileChange();
-
-  if (store.landmarksGeojson) {
-    const landmarksInputTransfer = new DataTransfer();
-    landmarksInputTransfer.items.add(
-      new File([JSON.stringify(store.landmarksGeojson)], "landmarks.geojson", {
-        type: "application/json",
-      })
-    );
-    landmarksInput.value!.files = landmarksInputTransfer.files;
-    onLandmarksFileChange();
-  }
-};
 </script>
 
 <template>
-  <div>
-    <multiselect
-      :class="{'server-select': true, tlNaviButton: true}"
-      v-model="store.currentServer"
-      :disabled="store.isEditingServer"
-      :options="store.serverList"
-      :searchable="false"
-      :allow-empty="false"
-      :showLabels="false"
-    ></multiselect>
-    <button :class="{ tlNaviButton: true }" @click="startEditing" title="Configure servers"><SettingsIcon></SettingsIcon></button>
-    <button :class="{ tlNaviButton: true, hidden: !store.isEditingServer }" @click="saveData">Save</button>
-    <button :class="{ tlNaviButton: true, hidden: !store.isEditingServer }" @click="cancel">Cancel</button>
-    <div class="server-editor" :class="{ hidden: !store.isEditingServer }" :style="{ marginTop: '5px' }">
-      <div>
-        <button @click="clearFields">Clear</button> <button @click="deleteCurrent">Delete</button>
-      </div>
+  <div :class="{ hidden: !store.isEditingServer }">
+    <div class="server-editor" :style="{ marginTop: '5px' }">
       <div>Server name:</div>
       <div><input v-model="serverName" type="text" /></div>
       <div>Webmap link (set to get geojson file links and webmap view):</div>
@@ -174,6 +132,10 @@ const startEditing = () => {
           @change="onLandmarksFileChange"
         />
       </div>
+      <button :class="{ tlNaviButton: true }" @click="clearFields">Clear</button>
+      <button :class="{ tlNaviButton: true }" @click="deleteCurrent">Delete</button>
+      <button :class="{ tlNaviButton: true }" @click="saveData">Save</button>
+      <button :class="{ tlNaviButton: true }" @click="cancel">Cancel</button>
     </div>
   </div>
 </template>

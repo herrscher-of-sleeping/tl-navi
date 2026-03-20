@@ -7,6 +7,7 @@ import { onMounted, onUnmounted, computed, ref } from "vue";
 import * as types from "./pathfinder/types";
 import { findPath } from "./pathfinder";
 import ServerEditor from "./components/ServerEditor.vue";
+import ServerSelector from "./components/ServerSelector.vue";
 import { store } from "./store";
 
 type Point = types.Point;
@@ -110,8 +111,9 @@ onUnmounted(async () => {
         <div id="params">
           <div class="editor-line">
             Select server:
-            <ServerEditor></ServerEditor>
+            <ServerSelector></ServerSelector>
           </div>
+          <ServerEditor></ServerEditor>
           <div class="editor-line">
             From:
             <CoordinateInput v-model="from"></CoordinateInput>
