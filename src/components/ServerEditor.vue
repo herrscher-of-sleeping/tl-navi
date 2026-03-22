@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, type Ref } from "vue";
-import { store, TOPS_NAME, formatURL, setServerValueOrDefault, updateServerInfo } from "../store";
+import { ref, type Ref, watch } from "vue";
+import { store, TOPS_NAME, DEFAULT_SERVERS, formatURL, setServerValueOrDefault, updateServerInfo } from "../store";
 import { db } from "../db";
 import * as types from "../pathfinder/types";
 
@@ -10,6 +10,43 @@ const serverName: Ref<string> = ref("");
 const serverLink: Ref<string> = ref("");
 const translocatorsInput: Ref<HTMLInputElement | null> = ref(null);
 const landmarksInput: Ref<HTMLInputElement | null> = ref(null);
+
+const startEditing = () => {
+  console.log(store.currentServer, store.mapLink);
+  serverName.value = store.currentServer;
+  serverLink.value = store.mapLink;
+  const translocatorsInputTransfer = new DataTransfer();
+  translocatorsInputTransfer.items.add(
+    new File([JSON.stringify(store.translocatorsGeojson)], "translocators.geojson", {
+      type: "application/json",
+    })
+  );
+  translocatorsInput.value!.files = translocatorsInputTransfer.files;
+  onTranslocatorsFileChange();
+
+  if (store.landmarksGeojson) {
+    const landmarksInputTransfer = new DataTransfer();
+    landmarksInputTransfer.items.add(
+      new File([JSON.stringify(store.landmarksGeojson)], "landmarks.geojson", {
+        type: "application/json",
+      })
+    );
+    landmarksInput.value!.files = landmarksInputTransfer.files;
+    onLandmarksFileChange();
+  }
+};
+
+
+watch(
+  () => store.isEditingServer,
+  (newValue, oldValue) => {
+    console.log(oldValue, newValue);
+    if (newValue == true) {
+      startEditing()
+    }
+  }
+)
+
 
 const onTranslocatorsFileChange = () => {
   const reader = new FileReader();
@@ -55,8 +92,8 @@ const onLandmarksFileChange = () => {
   }
 };
 
-const saveData = () => {
-  if (serverName.value === TOPS_NAME) {
+const saveData = async () => {
+  if (DEFAULT_SERVERS[serverName.value]) {
     alert("Cannot overwrite default server data!");
     return;
   }
@@ -66,8 +103,8 @@ const saveData = () => {
     translocatorsGeojson: translocatorsGeojson,
     landmarksGeojson: landmarksGeojson,
   });
-  setServerValueOrDefault(serverName.value);
-  updateServerInfo(serverName.value);
+  await setServerValueOrDefault(serverName.value);
+  await updateServerInfo(serverName.value);
   store.isEditingServer = false;
 };
 
@@ -78,13 +115,13 @@ const clearFields = () => {
   landmarksInput.value!.value = "";
 };
 
-const deleteCurrent = () => {
-  if (serverName.value === TOPS_NAME) {
+const deleteCurrent = async () => {
+  if (DEFAULT_SERVERS[serverName.value]) {
     alert("Cannot delete default server data!");
     return;
   }
   db.servers.where("name").equals(serverName.value).delete();
-  setServerValueOrDefault();
+  await setServerValueOrDefault();
   store.isEditingServer = false;
   store.currentServer = TOPS_NAME;
 };

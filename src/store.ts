@@ -6,7 +6,26 @@ import { makeUrl } from "@/url";
 export const TOPS_NAME = "TOPS (default)";
 export const TOPS_MAP_URL = "https://map.tops.vintagestory.at";
 
-const getServerList = async () => {
+export const DEFAULT_SERVERS: { [key: string]: { [key: string]: string}} = {
+  [TOPS_NAME]: {
+    url: "https://map.tops.vintagestory.at",
+    translocators: "tops_translocators.geojson",
+    landmarks: "tops_landmarks.geojson",
+
+  },
+  "Old TOPS (default)": {
+    url: "https://map.oldtops.vintagestory.at",
+    translocators: "old_tops_translocators.geojson",
+    landmarks: "old_tops_landmarks.geojson",
+  },
+  "Aurafury Riverlands (default)": {
+    url: "https://map.ri.aurafury.org",
+    translocators: "aurafury_riverlands_translocators.geojson",
+    landmarks: "aurafury_riverlands_landmarks.geojson",
+  }
+};
+
+export const getServerList = async () => {
   return (await db.servers.toArray()).map(server => server.name);
 };
 
@@ -52,9 +71,26 @@ watch(
   }
 );
 
-export function setServerValueOrDefault(currentServer: undefined | string = undefined) {
-  const localStorageCurrentServer =
+export async function updateServerList() {
+  store.serverList = await getServerList() as string[];
+};
+
+watch(
+  () => store.isEditingServer,
+  async (newValue, oldValue) => {
+    if (!newValue) {
+      updateServerList();
+    }
+  }
+);
+
+export async function setServerValueOrDefault(currentServer: undefined | string = undefined) {
+  let localStorageCurrentServer =
     currentServer || localStorage.getItem("currentServer") || TOPS_NAME;
+  const servers_count = await db.servers.where("name").equals(localStorageCurrentServer).count();
+  if (servers_count < 1) {
+    localStorageCurrentServer = TOPS_NAME;
+  }
   store.currentServer = localStorageCurrentServer;
 }
 
@@ -72,27 +108,34 @@ export function setDisplayPoint(point: types.Point | null) {
   store.url = makeUrl(store.coords);
 }
 
-db.servers.toArray().then(async value => {
-  try {
-    const [translocatorsResponse, landmarksResponse] = await Promise.all([
-      fetch("translocators.geojson"),
-      fetch("landmarks.geojson"),
-    ]);
+db.servers.toArray().then(async () => {
+  const fetchPromises = Object.entries(DEFAULT_SERVERS).map(async ([server_name, server_info]) => {
+    const translocatorsUrl = `data/geojson/${server_info.translocators}`;
+    const landmarksUrl = `data/geojson/${server_info.landmarks}`;
 
-    const [translocatorsGeojson, landmarksGeojson] = await Promise.all([
-      translocatorsResponse.json(),
-      landmarksResponse.json(),
-    ]);
+    try {
+      const [translocatorsResponse, landmarksResponse] = await Promise.all([
+        fetch(translocatorsUrl),
+        fetch(landmarksUrl),
+      ]);
 
-    await db.servers.put({
-      name: TOPS_NAME,
-      url: TOPS_MAP_URL,
-      translocatorsGeojson,
-      landmarksGeojson,
-    });
-  } catch (error) {
-    console.error("Error fetching or storing geojson files:", error);
-  }
+      const [translocatorsGeojson, landmarksGeojson] = await Promise.all([
+        translocatorsResponse.json(),
+        landmarksResponse.json(),
+      ]);
 
-  setServerValueOrDefault();
+      await db.servers.put({
+        name: server_name,
+        url: server_info.url,
+        translocatorsGeojson,
+        landmarksGeojson,
+      });
+    } catch (error) {
+      console.error(`Error fetching or storing geojson files for ${server_name}:`, error);
+    }
+  });
+
+  await Promise.all(fetchPromises);
+  await updateServerList()
+  await setServerValueOrDefault();
 });
