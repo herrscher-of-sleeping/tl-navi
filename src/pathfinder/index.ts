@@ -75,8 +75,8 @@ class Graph {
 
     const path: number[] = [];
     let u: number | null = to;
-    if (previous[u] || u === from) {
-      while (u) {
+    if (previous[u] != null || u === from) {
+      while (u != null) {
         path.push(u);
         u = previous[u];
       }
@@ -130,8 +130,8 @@ class Graph {
 
     const path: number[] = [];
     let u: number | null = to;
-    if (previous[u] || u === from) {
-      while (u) {
+    if (previous[u] != null || u === from) {
+      while (u != null) {
         path.push(u);
         u = previous[u];
       }
