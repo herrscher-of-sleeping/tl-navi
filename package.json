@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "run-s build:project-only build:geojson build:cname",
     "build:project-only": "run-p type-check \"build-only {@}\" --",
-    "build:geojson": "cp translocators.geojson dist/ && cp landmarks.geojson dist/",
+    "build:geojson": "cp -r data dist/data",
     "build:cname": "echo translocator.moe > dist/CNAME",
     "preview": "vite preview",
     "build-only": "vite build",
@@ -15,9 +15,13 @@
     "lint:oxlint": "oxlint . --fix -D correctness --ignore-path .gitignore",
     "lint:eslint": "eslint . --fix",
     "lint": "run-s lint:*",
-    "get:tops-translocators": "wget -O translocators.geojson https://map.tops.vintagestory.at/data/geojson/translocators.geojson",
-    "get:tops-landmarks": "wget -O landmarks.geojson https://map.tops.vintagestory.at/data/geojson/landmarks.geojson",
-    "get:geojsons": "run-p get:tops-translocators get:tops-landmarks"
+    "get:tops-translocators": "wget -O translocators.geojson https://map.tops.vintagestory.at/data/geojson/translocators.geojson -O data/geojson/tops_translocators.geojson",
+    "get:tops-landmarks": "wget -O landmarks.geojson https://map.tops.vintagestory.at/data/geojson/landmarks.geojson -O data/geojson/tops_landmarks.geojson",
+    "get:old-tops-translocators": "wget -O translocators.geojson https://map.oldtops.vintagestory.at/data/geojson/translocators.geojson -O data/geojson/old_tops_translocators.geojson",
+    "get:old-tops-landmarks": "wget -O landmarks.geojson https://map.oldtops.vintagestory.at/data/geojson/landmarks.geojson -O data/geojson/old_tops_landmarks.geojson",
+    "get:aurafury-riverlands-translocators": "wget -O translocators.geojson https://map.ri.aurafury.org/data/geojson/translocators.geojson -O data/geojson/aurafury_riverlands_translocators.geojson",
+    "get:aurafury-riverlands-landmarks": "wget -O landmarks.geojson https://map.ri.aurafury.org/data/geojson/landmarks.geojson -O data/geojson/aurafury_riverlands_landmarks.geojson",
+    "get:geojsons": "run-p get:tops-translocators get:tops-landmarks get:old-tops-translocators get:old-tops-landmarks get:aurafury-riverlands-translocators get:aurafury-riverlands-landmarks"
   },
   "dependencies": {
     "dexie": "^4.0.11",
