@@ -69,7 +69,7 @@ async function calculatePath(from: Value | null, to: Value | null) {
   isCalculating.value = false;
 }
 
-function onButtonClick() {
+function onCalculateClick() {
   calculatePath(from.value, to.value);
 }
 
@@ -144,7 +144,7 @@ onUnmounted(async () => {
               >?</span
             >
           </div>
-          <button :disabled="store.isEditingServer" @click="onButtonClick" class="calculate-button">
+          <button :disabled="store.isEditingServer" @click="onCalculateClick" class="calculate-button">
             Calculate
           </button>
           <div v-if="isCalculating" class="progress">
