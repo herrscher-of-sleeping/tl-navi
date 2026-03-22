@@ -22,6 +22,11 @@ export const DEFAULT_SERVERS: { [key: string]: { [key: string]: string}} = {
     url: "https://map.ri.aurafury.org",
     translocators: "aurafury_riverlands_translocators.geojson",
     landmarks: "aurafury_riverlands_landmarks.geojson",
+  },
+  "Aurafury Crystal Seas (default)": {
+    url: "https://map.cs.aurafury.org",
+    translocators: "aurafury_crystal_seas_translocators.geojson",
+    landmarks: "aurafury_crystal_seas_landmarks.geojson",
   }
 };
 

@@ -21,7 +21,9 @@
     "get:old-tops-landmarks": "wget -O landmarks.geojson https://map.oldtops.vintagestory.at/data/geojson/landmarks.geojson -O data/geojson/old_tops_landmarks.geojson",
     "get:aurafury-riverlands-translocators": "wget -O translocators.geojson https://map.ri.aurafury.org/data/geojson/translocators.geojson -O data/geojson/aurafury_riverlands_translocators.geojson",
     "get:aurafury-riverlands-landmarks": "wget -O landmarks.geojson https://map.ri.aurafury.org/data/geojson/landmarks.geojson -O data/geojson/aurafury_riverlands_landmarks.geojson",
-    "get:geojsons": "run-p get:tops-translocators get:tops-landmarks get:old-tops-translocators get:old-tops-landmarks get:aurafury-riverlands-translocators get:aurafury-riverlands-landmarks"
+    "get:aurafury-crystal-seas-translocators": "wget -O translocators.geojson https://map.cs.aurafury.org/data/geojson/translocators.geojson -O data/geojson/aurafury_crystal_seas_translocators.geojson",
+    "get:aurafury-crystal-seas-landmarks": "wget -O landmarks.geojson https://map.cs.aurafury.org/data/geojson/landmarks.geojson -O data/geojson/aurafury_crystal_seas_landmarks.geojson",
+    "get:geojsons": "run-p get:tops-translocators get:tops-landmarks get:old-tops-translocators get:old-tops-landmarks get:aurafury-riverlands-translocators get:aurafury-riverlands-landmarks get:aurafury-crystal-seas-translocators get:aurafury-crystal-seas-landmarks"
   },
   "dependencies": {
     "dexie": "^4.0.11",
