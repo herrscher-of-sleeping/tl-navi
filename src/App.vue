@@ -10,6 +10,7 @@ import ServerEditor from "./components/ServerEditor.vue";
 import InfoPopup from "./components/InfoPopup.vue";
 import ServerSelector from "./components/ServerSelector.vue";
 import QuestionIcon from "./components/icons/IconQuestion.vue";
+import SettingsIcon from "./components/icons/IconSettings.vue";
 import { store } from "./store";
 
 type Point = types.Point;
@@ -107,6 +108,10 @@ const showInfo = () => {
   store.isShowingInfo = true;
 }
 
+const startEditing = () => {
+  store.isEditingServer = true;
+};
+
 </script>
 
 <template>
@@ -121,6 +126,7 @@ const showInfo = () => {
           <div class="editor-line server-line">
             <span class="margin-right-5-px">Server:</span>
             <ServerSelector></ServerSelector>
+            <button :class="{ tlNaviButton: true, tlNaviIconButton: true }" @click="startEditing" title="Configure servers"><SettingsIcon></SettingsIcon></button>
             <button :onclick="showInfo" :class="{ tlNaviButton: true, tlNaviIconButton: true }" class="push-right"><QuestionIcon></QuestionIcon></button>
           </div>
           <div class="editor-line">

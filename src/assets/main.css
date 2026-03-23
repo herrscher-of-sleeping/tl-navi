@@ -260,6 +260,9 @@ input[type="file"]::file-selector-button:hover {
 .tlNaviIconButton {
   height: 34px;
   width: 34px;
+  align-items: center;
+  display: flex;
+  justify-content: center;
 }
 
 .tlNaviSelect {
