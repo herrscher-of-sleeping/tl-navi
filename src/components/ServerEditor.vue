@@ -3,6 +3,7 @@ import { ref, type Ref, watch } from "vue";
 import { store, TOPS_NAME, DEFAULT_SERVERS, formatURL, setServerValueOrDefault, updateServerInfo } from "../store";
 import { db } from "../db";
 import * as types from "../pathfinder/types";
+import PopupContainer from "./PopupContainer.vue";
 
 let translocatorsGeojson: undefined | types.TranslocatorsGeojson;
 let landmarksGeojson: undefined | types.LandmarksGeojson;
@@ -133,48 +134,50 @@ const cancel = () => {
 </script>
 
 <template>
-  <div :class="{ hidden: !store.isEditingServer }">
-    <div class="server-editor" :style="{ marginTop: '5px' }">
-      <div>Server name:</div>
-      <div><input v-model="serverName" type="text" /></div>
-      <div>Webmap link (set to get geojson file links and webmap view):</div>
-      <div><input v-model="serverLink" type="text" /></div>
-      <div>
-        translocators.geojson:
-        <a v-if="serverLink" :href="formatURL(serverLink) + '/data/geojson/translocators.geojson'"
-          >download</a
-        >
+  <PopupContainer :class="{ hidden: !store.isEditingServer }">
+    <div>
+      <div class="server-editor" :style="{ marginTop: '5px' }">
+        <div>Server name:</div>
+        <div><input v-model="serverName" type="text" /></div>
+        <div>Webmap link (set to get geojson file links and webmap view):</div>
+        <div><input v-model="serverLink" type="text" /></div>
+        <div>
+          translocators.geojson:
+          <a v-if="serverLink" :href="formatURL(serverLink) + '/data/geojson/translocators.geojson'"
+            >download</a
+          >
+        </div>
+        <div>
+          <input
+            ref="translocatorsInput"
+            accept=".json, .geojson"
+            id="translocators_file"
+            type="file"
+            @change="onTranslocatorsFileChange"
+          />
+        </div>
+        <div>
+          landmarks.geojson:
+          <a v-if="serverLink" :href="formatURL(serverLink) + '/data/geojson/landmarks.geojson'"
+            >download</a
+          >
+        </div>
+        <div>
+          <input
+            ref="landmarksInput"
+            accept=".json, .geojson"
+            id="landmarks_file"
+            type="file"
+            @change="onLandmarksFileChange"
+          />
+        </div>
+        <button :class="{ tlNaviButton: true }" @click="clearFields">Clear</button>
+        <button :class="{ tlNaviButton: true }" @click="deleteCurrent">Delete</button>
+        <button :class="{ tlNaviButton: true }" @click="saveData">Save</button>
+        <button :class="{ tlNaviButton: true }" @click="cancel">Cancel</button>
       </div>
-      <div>
-        <input
-          ref="translocatorsInput"
-          accept=".json, .geojson"
-          id="translocators_file"
-          type="file"
-          @change="onTranslocatorsFileChange"
-        />
-      </div>
-      <div>
-        landmarks.geojson:
-        <a v-if="serverLink" :href="formatURL(serverLink) + '/data/geojson/landmarks.geojson'"
-          >download</a
-        >
-      </div>
-      <div>
-        <input
-          ref="landmarksInput"
-          accept=".json, .geojson"
-          id="landmarks_file"
-          type="file"
-          @change="onLandmarksFileChange"
-        />
-      </div>
-      <button :class="{ tlNaviButton: true }" @click="clearFields">Clear</button>
-      <button :class="{ tlNaviButton: true }" @click="deleteCurrent">Delete</button>
-      <button :class="{ tlNaviButton: true }" @click="saveData">Save</button>
-      <button :class="{ tlNaviButton: true }" @click="cancel">Cancel</button>
     </div>
-  </div>
+  </PopupContainer>
 </template>
 
 <style lang="css" scoped>
@@ -184,16 +187,13 @@ button {
 }
 
 .server-editor {
+  background-color: var(--background-color);
   padding: 5px;
 }
 
 input[type="text"] {
   width: calc(100% - 10px);
   min-height: 32px;
-}
-
-.hidden {
-  display: none;
 }
 
 .server-select {

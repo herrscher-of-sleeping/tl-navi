@@ -10,9 +10,9 @@ const startEditing = () => {
 </script>
 
 <template>
-  <div>
+  <div :style="{display: 'inherit'}">
     <multiselect
-      :class="{'server-select': true, tlNaviButton: true}"
+      :class="{'server-select': true, tlNaviSelect: true}"
       v-model="store.currentServer"
       :disabled="store.isEditingServer"
       :options="store.serverList"
@@ -20,7 +20,7 @@ const startEditing = () => {
       :allow-empty="false"
       :showLabels="false"
     ></multiselect>
-    <button :class="{ tlNaviButton: true }" @click="startEditing" title="Configure servers"><SettingsIcon></SettingsIcon></button>
+    <button :class="{ tlNaviButton: true, tlNaviIconButton: true }" @click="startEditing" title="Configure servers"><SettingsIcon></SettingsIcon></button>
   </div>
 </template>
 
@@ -46,9 +46,5 @@ input[type="text"] {
 .server-select {
   display: inline-block;
   max-width: 400px;
-}
-
-.tlNaviButton {
-  margin-right: 5px;
 }
 </style>

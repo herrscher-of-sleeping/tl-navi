@@ -7,7 +7,9 @@ import { onMounted, onUnmounted, computed, ref } from "vue";
 import * as types from "./pathfinder/types";
 import { findPath } from "./pathfinder";
 import ServerEditor from "./components/ServerEditor.vue";
+import InfoPopup from "./components/InfoPopup.vue";
 import ServerSelector from "./components/ServerSelector.vue";
+import QuestionIcon from "./components/icons/IconQuestion.vue";
 import { store } from "./store";
 
 type Point = types.Point;
@@ -100,6 +102,11 @@ onUnmounted(async () => {
   window.removeEventListener("keydown", handleEnterKey);
   window.removeEventListener("resize", handleResize);
 });
+
+const showInfo = () => {
+  store.isShowingInfo = true;
+}
+
 </script>
 
 <template>
@@ -107,13 +114,15 @@ onUnmounted(async () => {
 
   <main>
     <div id="root" class="container">
+      <ServerEditor></ServerEditor>
+      <InfoPopup></InfoPopup>
       <div :class="leftPaneClass">
         <div id="params">
-          <div class="editor-line">
-            Select server:
+          <div class="editor-line server-line">
+            <span class="margin-right-5-px">Server:</span>
             <ServerSelector></ServerSelector>
+            <button :onclick="showInfo" :class="{ tlNaviButton: true, tlNaviIconButton: true }" class="push-right"><QuestionIcon></QuestionIcon></button>
           </div>
-          <ServerEditor></ServerEditor>
           <div class="editor-line">
             From:
             <CoordinateInput v-model="from"></CoordinateInput>
@@ -236,5 +245,12 @@ input {
 }
 .editor-line {
   padding-bottom: 5px;
+}
+.server-line {
+  display: flex;
+  align-items: center;
+}
+.push-right {
+  margin-left: auto;
 }
 </style>

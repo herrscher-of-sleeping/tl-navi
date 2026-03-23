@@ -41,6 +41,7 @@ export const store = reactive({
   landmarksGeojson: null as types.LandmarksGeojson | null,
   mapLink: "",
   isEditingServer: false,
+  isShowingInfo: false,
   zoom: 5,
   coords: null as null | types.Point,
   otherCoords: null as null | types.Point,
