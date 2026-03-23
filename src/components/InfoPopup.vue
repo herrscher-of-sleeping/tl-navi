@@ -39,7 +39,7 @@ import PopupContainer from "./PopupContainer.vue";
         E-mail: <a href="mailto:herrscher.of.the.tea@gmail.com">herrscher.of.the.tea@gmail.com</a><br>
         GitHub: <a href="https://github.com/herrscher-of-sleeping">https://github.com/herrscher-of-sleeping</a><br>
         <br>
-        You use either of these contacts for bug reports, suggestions, or to recommend servers to add.
+        You can use either of these contacts for bug reports, suggestions, or to recommend servers to add.
 
         <h2>License information</h2>
         This project is licensed under MIT and the source code is <a href="https://github.com/herrscher-of-sleeping/tl-navi">available on GitHub</a>. It uses Vue, Vue-Multiselect and Dexie as its direct dependencies. For a full license information see <a href="dependencies.html">Licenses</a>.
