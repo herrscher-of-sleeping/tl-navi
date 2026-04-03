@@ -121,8 +121,8 @@ db.servers.toArray().then(async () => {
 
     try {
       const [translocatorsResponse, landmarksResponse] = await Promise.all([
-        fetch(translocatorsUrl),
-        fetch(landmarksUrl),
+        fetch(translocatorsUrl, { cache: "no-cache" }),
+        fetch(landmarksUrl, { cache: "no-cache" }),
       ]);
 
       const [translocatorsGeojson, landmarksGeojson] = await Promise.all([
