@@ -4,11 +4,14 @@ import { store, TOPS_NAME, DEFAULT_SERVERS, formatURL, setServerValueOrDefault, 
 import { db } from "../db";
 import * as types from "../pathfinder/types";
 import PopupContainer from "./PopupContainer.vue";
+import * as QT from "../pathfinder/quadtree";
+import { patchTranslocatorsGeojson } from "@/geojsonPatching";
 
 let translocatorsGeojson: undefined | types.TranslocatorsGeojson;
 let landmarksGeojson: undefined | types.LandmarksGeojson;
 const serverName: Ref<string> = ref("");
 const serverLink: Ref<string> = ref("");
+const translocatorsPatch: Ref<string> = ref("");
 const translocatorsInput: Ref<HTMLInputElement | null> = ref(null);
 const landmarksInput: Ref<HTMLInputElement | null> = ref(null);
 
@@ -16,6 +19,8 @@ const startEditing = () => {
   console.log(store.currentServer, store.mapLink);
   serverName.value = store.currentServer;
   serverLink.value = store.mapLink;
+  translocatorsPatch.value = store.translocatorsPatch;
+
   const translocatorsInputTransfer = new DataTransfer();
   translocatorsInputTransfer.items.add(
     new File([JSON.stringify(store.translocatorsGeojson)], "translocators.geojson", {
@@ -93,16 +98,64 @@ const onLandmarksFileChange = () => {
   }
 };
 
+const vector2Re = /^(-?\d+)\s*(?:,|\s+)\s*(-?\d+)$/;
+const vector3Re =/^(-?\d+)\s*(?:,|\s+)\s*(-?\d+)\s*(?:,|\s+)\s*(-?\d+)$/;
+
+function parseNumber(text: string): types.Point3D|undefined {
+  const parsedParts = vector2Re.exec(text) ?? vector3Re.exec(text);
+  if (!parsedParts) {
+    return;
+  }
+  if (parsedParts.length == 3) {
+    return { x: Number(parsedParts[1]), y: 0, z: -Number(parsedParts[2]) };
+  }
+  if (parsedParts.length == 4) {
+    return { x: Number(parsedParts[1]), y: Number(parsedParts[2]), z: -Number(parsedParts[3]) };
+  }
+}
+
+function parseTranslocatorsPatch(text: string): types.TranslocatorsPatch {
+  const result = [];
+  const lines = text.split("\n");
+  for (const line of lines) {
+    const parts = line.split(" to ");
+    if (parts.length !== 2) {
+      continue;
+    }
+    const fromPoint = parseNumber(parts[0]);
+    const toPoint = parseNumber(parts[1]);
+    if (fromPoint && toPoint) {
+      result.push({ from: fromPoint, to: toPoint, operation: "add" });
+    }
+  }
+  return result;
+}
+
 const saveData = async () => {
   if (DEFAULT_SERVERS[serverName.value]) {
     alert("Cannot overwrite default server data!");
     return;
+  }
+  const quadTree = QT.QuadTree.fromTranslocatorsGeojson(translocatorsGeojson!!);
+  let patchedTranslocatorsGeojson: types.TranslocatorsGeojson|undefined|null = null;
+  let patchedQuadtree: QT.QuadTree|null = null;
+  if (translocatorsPatch.value.trim().length > 0) {
+    const parsedPatch = parseTranslocatorsPatch(translocatorsPatch.value);
+    patchedTranslocatorsGeojson = patchTranslocatorsGeojson(
+      translocatorsGeojson!!,
+      parsedPatch
+    );
+    patchedQuadtree = QT.QuadTree.fromTranslocatorsGeojson(patchedTranslocatorsGeojson);
   }
   db.servers.put({
     name: serverName.value,
     url: serverLink.value,
     translocatorsGeojson: translocatorsGeojson,
     landmarksGeojson: landmarksGeojson,
+    translocatorsPatch: translocatorsPatch.value,
+    patchedTranslocatorsGeojson: patchedTranslocatorsGeojson,
+    quadtree: quadTree,
+    patchedQuadtree: patchedQuadtree,
   });
   await setServerValueOrDefault(serverName.value);
   await updateServerInfo(serverName.value);
@@ -171,10 +224,16 @@ const cancel = () => {
             @change="onLandmarksFileChange"
           />
         </div>
-        <button :class="{ tlNaviButton: true }" @click="clearFields">Clear</button>
-        <button :class="{ tlNaviButton: true }" @click="deleteCurrent">Delete</button>
-        <button :class="{ tlNaviButton: true }" @click="saveData">Save</button>
-        <button :class="{ tlNaviButton: true }" @click="cancel">Cancel</button>
+        <div class="patch-panel">
+          <div>Translocators patch</div>
+          <textarea v-model="translocatorsPatch" :style="{width: '100%', minHeight: '200px'}"></textarea>
+        </div>
+        <div>
+          <button :class="{ tlNaviButton: true }" @click="clearFields">Clear</button>
+          <button :class="{ tlNaviButton: true }" @click="deleteCurrent">Delete</button>
+          <button :class="{ tlNaviButton: true }" @click="saveData">Save</button>
+          <button :class="{ tlNaviButton: true }" @click="cancel">Cancel</button>
+        </div>
       </div>
     </div>
   </PopupContainer>
@@ -203,5 +262,8 @@ input[type="text"] {
 
 .tlNaviButton {
   margin-right: 5px;
+}
+.patch-panel {
+  margin-bottom: 5px;
 }
 </style>

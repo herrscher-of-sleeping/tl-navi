@@ -2,6 +2,7 @@ import { reactive, watch } from "vue";
 import { db } from "./db";
 import * as types from "./pathfinder/types";
 import { makeUrl } from "@/url";
+import * as QT from "./pathfinder/quadtree";
 
 export const TOPS_NAME = "TOPS (default)";
 export const TOPS_MAP_URL = "https://map.tops.vintagestory.at";
@@ -38,6 +39,8 @@ export const store = reactive({
   serverList: await getServerList() as string[],
   currentServer: "",
   translocatorsGeojson: null as types.TranslocatorsGeojson | null,
+  translocatorsPatch: "" as string,
+  patchedTranslocatorsGeojson: null as types.TranslocatorsGeojson | null,
   landmarksGeojson: null as types.LandmarksGeojson | null,
   mapLink: "",
   isEditingServer: false,
@@ -104,6 +107,8 @@ export async function updateServerInfo(serverName: string) {
   localStorage.setItem("currentServer", serverName);
   const serverInfo = await db.servers.where("name").equals(serverName).first();
   store.translocatorsGeojson = serverInfo?.translocatorsGeojson as types.TranslocatorsGeojson;
+  store.patchedTranslocatorsGeojson = serverInfo?.patchedTranslocatorsGeojson as types.TranslocatorsGeojson;
+  store.translocatorsPatch = serverInfo?.translocatorsPatch ?? "";
   store.landmarksGeojson = serverInfo?.landmarksGeojson as types.LandmarksGeojson;
   store.mapLink = formatURL(serverInfo?.url);
 }
@@ -133,6 +138,7 @@ db.servers.toArray().then(async () => {
       await db.servers.put({
         name: server_name,
         url: server_info.url,
+        quadtree: QT.QuadTree.fromTranslocatorsGeojson(translocatorsGeojson),
         translocatorsGeojson,
         landmarksGeojson,
       });

@@ -38,3 +38,11 @@ export type LandmarksGeojson = {
   name: "landmarks";
   features: LandmarkFeature[];
 };
+
+export type Point3D = {
+  x: number,
+  y: number,
+  z: number,
+};
+
+export type TranslocatorsPatch = { from: Point3D, to: Point3D, fromName?: String, toName?: String, operation: String }[];
