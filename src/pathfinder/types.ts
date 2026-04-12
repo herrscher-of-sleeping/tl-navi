@@ -38,3 +38,14 @@ export type LandmarksGeojson = {
   name: "landmarks";
   features: LandmarkFeature[];
 };
+
+export type Point3D = {
+  x: number,
+  y: number,
+  z: number,
+};
+
+export type TranslocatorPatchOperationAdd =  { from: Point3D, to: Point3D, operation: "add" };
+export type TranslocatorPatchOperationDelete =  { from: Point3D, operation: "delete" };
+
+export type TranslocatorsPatch = (TranslocatorPatchOperationAdd|TranslocatorPatchOperationDelete)[];

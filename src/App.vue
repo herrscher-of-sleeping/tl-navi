@@ -41,14 +41,15 @@ async function calculatePath(from: Value | null, to: Value | null) {
   if (isCalculating.value) {
     return;
   }
-  if (!store.translocatorsGeojson) {
+  const translocatorsGeojson = store.patchedTranslocatorsGeojson ?? store.translocatorsGeojson;
+  if (!translocatorsGeojson) {
     return;
   }
 
   isCalculating.value = true;
   progress.value = 0;
 
-  const pathGenerator = findPath(store.translocatorsGeojson, {
+  const pathGenerator = findPath(translocatorsGeojson, {
     from: fromCoords,
     to: toCoords,
     queryExpansionStartDist: maxWalkDistance.value,

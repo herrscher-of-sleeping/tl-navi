@@ -1,4 +1,5 @@
 type Point = [number, number] | [number, number, number];
+import * as types from "./types";
 
 class AABB {
   start: Point;
@@ -155,6 +156,17 @@ class QuadTree {
       }
     }
     return sb.join("\n");
+  }
+
+  static fromTranslocatorsGeojson(translocatorsGeojson: types.TranslocatorsGeojson): QuadTree {
+    const quadTree = new QuadTree(new AABB([-1000000, -1000000], 2000000));
+    const tlPairList = translocatorsGeojson["features"];
+    for (let i = 0; i < tlPairList.length; i++) {
+      const pair = tlPairList[i];
+      quadTree.insert(pair.geometry.coordinates[0], i * 2);
+      quadTree.insert(pair.geometry.coordinates[1], i * 2 + 1);
+    }
+    return quadTree;
   }
 }
 
