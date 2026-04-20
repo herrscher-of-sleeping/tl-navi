@@ -40,10 +40,6 @@ Used for distance color-coding
     color: violet;
   }
 
-  .help-tooltip {
-    background-color: #134269 !important;
-    color: white;
-  }
   .tl-navi-icon-translocator path {
     stroke: #ffa0ff;
   }

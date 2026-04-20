@@ -11,6 +11,7 @@ import InfoPopup from "./components/InfoPopup.vue";
 import ServerSelector from "./components/ServerSelector.vue";
 import QuestionIcon from "./components/icons/IconQuestion.vue";
 import SettingsIcon from "./components/icons/IconSettings.vue";
+import HelpButton from "./components/HelpButton.vue";
 import { store } from "./store";
 
 type Point = types.Point;
@@ -149,16 +150,14 @@ const startEditing = () => {
             />
             more walking.
             <span>(Translocator weight {{ translocatorWeight }})</span>
-            <span
-              class="help-tooltip"
-              :title="
+            <HelpButton
+              :text="
                 translocatorWeight === 0
                   ? `0 means you don't want any extra walking for less teleportations`
                   : `This means you're fine walking extra ${translocatorWeight} for one less teleportation`
               "
               onclick="alert(this.title)"
-              >?</span
-            >
+              >?</HelpButton>
           </div>
           <button :disabled="store.isEditingServer" @click="onCalculateClick" class="calculate-button">
             Calculate
@@ -239,16 +238,6 @@ input {
 }
 .calculate-button {
   max-width: 300px;
-}
-.help-tooltip {
-  background-color: aqua;
-  border-radius: 30px;
-  min-width: 1.2em;
-  text-align: center;
-  display: inline-block;
-  margin-left: 2px;
-  margin-right: 2px;
-  cursor: help;
 }
 .editor-line {
   padding-bottom: 5px;
