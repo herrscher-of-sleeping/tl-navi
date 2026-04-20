@@ -6,6 +6,7 @@ import * as types from "../pathfinder/types";
 import PopupContainer from "./PopupContainer.vue";
 import * as QT from "../pathfinder/quadtree";
 import { patchTranslocatorsGeojson } from "@/geojsonPatching";
+import HelpButton from "./HelpButton.vue";
 
 let translocatorsGeojson: undefined | types.TranslocatorsGeojson;
 let landmarksGeojson: undefined | types.LandmarksGeojson;
@@ -199,6 +200,18 @@ const cancel = () => {
   clearFields();
   store.isEditingServer = false;
 };
+
+const patchHelp = `Format:
+add x1,y1,z1 to x2,y2,z2
+delete x,y,z
+
+'y' is optional and can be omitted:
+add 42,42 to 5000, 6000
+delete 123,4536
+
+Any other line is simply ignored
+`;
+
 </script>
 
 <template>
@@ -240,7 +253,10 @@ const cancel = () => {
           />
         </div>
         <div class="patch-panel">
-          <div>Translocators patch</div>
+          <div>
+            Translocators patch
+            <HelpButton :text="patchHelp"></HelpButton>
+          </div>
           <textarea v-model="translocatorsPatch" :style="{width: '100%', minHeight: '100px'}"></textarea>
         </div>
         <div>
