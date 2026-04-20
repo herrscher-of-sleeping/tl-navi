@@ -41,4 +41,9 @@ input[type="text"] {
   display: inline-block;
   max-width: 400px;
 }
+
+:deep(.multiselect__content-wrapper) {
+  width: 300px;
+  min-width: 100%;
+}
 </style>
