@@ -230,6 +230,7 @@ multiselect__option--selected::after:hover {
 }
 
 button,
+select,
 input[type="file"]::file-selector-button {
   min-height: 32px;
   border: var(--border);

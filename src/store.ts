@@ -52,6 +52,7 @@ export const store = reactive({
   angleOut: null as null | number,
   showMapOverlay: false,
   url: "",
+  language: localStorage.getItem("language") ?? "en",
 });
 
 export const formatURL = (userUrlInput?: string): string => {
@@ -70,6 +71,11 @@ export const formatURL = (userUrlInput?: string): string => {
     return "";
   }
 };
+
+watch(() => store.language, function(value) {
+  localStorage.setItem("language", value);
+  location.reload();
+});
 
 watch(() => store.currentServer, updateServerInfo);
 

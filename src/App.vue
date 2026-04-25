@@ -129,7 +129,13 @@ const startEditing = () => {
             <span class="margin-right-5-px">{{ $t("app.server") }}</span>
             <ServerSelector></ServerSelector>
             <button :class="{ tlNaviButton: true, tlNaviIconButton: true }" @click="startEditing" :title="$t('server_editor.configure_servers')"><SettingsIcon></SettingsIcon></button>
-            <button :onclick="showInfo" :class="{ tlNaviButton: true, tlNaviIconButton: true }" class="push-right"><QuestionIcon></QuestionIcon></button>
+            <div class="push-right">
+              <select v-model="store.language" :class="{ tlNaviButton: true }">
+                <option value="en">English</option>
+                <option value="ru">Русский</option>
+              </select>
+              <button :onclick="showInfo" :class="{ tlNaviButton: true, tlNaviIconButton: true }"><QuestionIcon></QuestionIcon></button>
+            </div>
           </div>
           <div class="editor-line">
             {{$t("app.from_coords")}}
@@ -248,5 +254,7 @@ input {
 }
 .push-right {
   margin-left: auto;
+  display: flex;
+  gap: 5px;
 }
 </style>

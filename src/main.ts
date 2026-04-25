@@ -13,7 +13,7 @@ const locales = {
 };
 
 i18next.init({
-  lng: "en",
+  lng: localStorage.getItem("language") ?? "en",
   fallbackLng: "en",
   interpolation: {
     escapeValue: false,
