@@ -126,21 +126,21 @@ const startEditing = () => {
       <div :class="leftPaneClass">
         <div id="params">
           <div class="editor-line server-line">
-            <span class="margin-right-5-px">Server:</span>
+            <span class="margin-right-5-px">{{ $t("app.server") }}</span>
             <ServerSelector></ServerSelector>
-            <button :class="{ tlNaviButton: true, tlNaviIconButton: true }" @click="startEditing" title="Configure servers"><SettingsIcon></SettingsIcon></button>
+            <button :class="{ tlNaviButton: true, tlNaviIconButton: true }" @click="startEditing" :title="$t('server_editor.configure_servers')"><SettingsIcon></SettingsIcon></button>
             <button :onclick="showInfo" :class="{ tlNaviButton: true, tlNaviIconButton: true }" class="push-right"><QuestionIcon></QuestionIcon></button>
           </div>
           <div class="editor-line">
-            From:
+            {{$t("app.from_coords")}}
             <CoordinateInput v-model="from"></CoordinateInput>
           </div>
           <div class="editor-line">
-            To:
+            {{$t("app.to_coords")}}
             <CoordinateInput v-model="to"></CoordinateInput>
           </div>
           <div class="editor-line">
-            More teleporting
+            {{ $t("app.more_teleporting") }}
             <input
               :disabled="store.isEditingServer"
               type="range"
@@ -148,19 +148,19 @@ const startEditing = () => {
               max="1000"
               v-model.number="translocatorWeight"
             />
-            more walking.
-            <span>(Translocator weight {{ translocatorWeight }})</span>
+            {{ $t("app.more_walking") }}
+            <span>({{ $t("app.translocator_weight") }}{{ translocatorWeight }})</span>
             <HelpButton
               :text="
                 translocatorWeight === 0
-                  ? `0 means you don't want any extra walking for less teleportations`
-                  : `This means you're fine walking extra ${translocatorWeight} for one less teleportation`
+                  ? $t('app.weight_help_zero')
+                  : $t('app.weight_help_nonzero').replace('{{weight}}', String(translocatorWeight))
               "
               onclick="alert(this.title)"
               >?</HelpButton>
           </div>
           <button :disabled="store.isEditingServer" @click="onCalculateClick" class="calculate-button">
-            Calculate
+            {{ $t("app.calculate") }}
           </button>
           <div v-if="isCalculating" class="progress">
             <p>{{ progressType }}: {{ progress.toFixed(1) }}%</p>

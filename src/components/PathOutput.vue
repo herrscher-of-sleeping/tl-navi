@@ -5,6 +5,9 @@ import CopyIcon from "./icons/IconCopy.vue";
 import TranslocatorIcon from "./icons/IconTranslocator.vue";
 import { makeUrl } from "@/url";
 import { store, setDisplayPoint } from "@/store";
+import { useTranslation } from "i18next-vue";
+
+const { t } = useTranslation();
 
 const props = defineProps<{
   path: Point[];
@@ -117,7 +120,7 @@ const CoordClickie = (localProps: { pointId: number }) => {
     const point = props.path[pointId];
     const url = makeUrl(point);
     if (url === "") {
-      alert("Map URL is not set in settings");
+      alert(t("path_output.map_url_not_set"));
       return;
     }
     window.open(url, "_blank");
@@ -131,7 +134,7 @@ const CoordClickie = (localProps: { pointId: number }) => {
           const otherPointId = pointId % 2 ? pointId + 1 : pointId - 1;
           copyCommand(props.path[pointId], props.path[otherPointId]);
         },
-        title: "Copy waypoint command",
+        title: t("path_output.copy_waypoint"),
       },
       [h(CopyIcon)]
     );
@@ -190,12 +193,12 @@ const getClassByTravelDistance = (distance: number) => {
   <input style="display: none" ref="copyInput" />
   <div class="list" v-if="path.length > 0">
     <div>
-      {{ props.path.length / 2 - 1 }} translocator jumps; approximate walk distance:
-      {{ totalDistance }} blocks. Show TL depths: <input type="checkbox" v-model="showDepth" />
+      {{ $t("path_output.translocator_jumps", { count: props.path.length / 2 - 1 }) }}; {{ $t("path_output.approximate_walk_distance") }}
+      {{ $t("path_output.blocks", { count: totalDistance }) }}. {{ $t("path_output.show_tl_depths") }} <input type="checkbox" v-model="showDepth" />
       <ul id="path">
         <li v-for="(distance, index) in distances" :key="index">
-          Walk <span :class="getClassByTravelDistance(distance)">{{ distance }}</span> blocks from
-          <coord-clickie :point-id="index * 2"></coord-clickie> to
+          {{ $t("path_output.walk") }} <span :class="getClassByTravelDistance(distance)">{{ distance }}</span> {{ $t("path_output.blocks_from", { count: distance }) }}
+          <coord-clickie :point-id="index * 2"></coord-clickie> {{ $t("path_output.to") }}
           <coord-clickie :point-id="index * 2 + 1"></coord-clickie>
         </li>
       </ul>

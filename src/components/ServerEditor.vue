@@ -201,16 +201,6 @@ const cancel = () => {
   store.isEditingServer = false;
 };
 
-const patchHelp = `Format:
-add x1,y1,z1 to x2,y2,z2
-delete x,y,z
-
-'y' is optional and can be omitted:
-add 42,42 to 5000, 6000
-delete 123,4536
-
-Any other line is simply ignored
-`;
 
 </script>
 
@@ -218,14 +208,14 @@ Any other line is simply ignored
   <PopupContainer :class="{ hidden: !store.isEditingServer }">
     <div>
       <div class="server-editor" :style="{ marginTop: '5px' }">
-        <div>Server name:</div>
+        <div>{{ $t("server_editor.server_name") }}</div>
         <div><input v-model="serverName" type="text" /></div>
-        <div>Webmap link (set to get geojson file links and webmap view):</div>
+        <div>{{ $t("server_editor.webmap_link") }}</div>
         <div><input v-model="serverLink" type="text" /></div>
         <div>
-          translocators.geojson:
+          {{ $t("server_editor.translocators_geojson") }}
           <a v-if="serverLink" :href="formatURL(serverLink) + '/data/geojson/translocators.geojson'"
-            >download</a
+            >{{ $t("server_editor.download") }}</a
           >
         </div>
         <div>
@@ -238,9 +228,9 @@ Any other line is simply ignored
           />
         </div>
         <div>
-          landmarks.geojson:
+          {{ $t("server_editor.landmarks_geojson") }}
           <a v-if="serverLink" :href="formatURL(serverLink) + '/data/geojson/landmarks.geojson'"
-            >download</a
+            >{{ $t("server_editor.download") }}</a
           >
         </div>
         <div>
@@ -254,16 +244,16 @@ Any other line is simply ignored
         </div>
         <div class="patch-panel">
           <div>
-            Translocators patch
-            <HelpButton :text="patchHelp"></HelpButton>
+            {{ $t("server_editor.translocators_patch") }}
+            <HelpButton :text="$t('server_editor.patch_help')"></HelpButton>
           </div>
           <textarea v-model="translocatorsPatch" :style="{width: '100%', minHeight: '100px'}"></textarea>
         </div>
         <div>
-          <button :class="{ tlNaviButton: true }" @click="clearFields">Clear</button>
-          <button :class="{ tlNaviButton: true }" @click="deleteCurrent">Delete</button>
-          <button :class="{ tlNaviButton: true }" @click="saveData">Save</button>
-          <button :class="{ tlNaviButton: true }" @click="cancel">Cancel</button>
+          <button :class="{ tlNaviButton: true }" @click="clearFields">{{ $t("server_editor.clear") }}</button>
+          <button :class="{ tlNaviButton: true }" @click="deleteCurrent">{{ $t("server_editor.delete") }}</button>
+          <button :class="{ tlNaviButton: true }" @click="saveData">{{ $t("server_editor.save") }}</button>
+          <button :class="{ tlNaviButton: true }" @click="cancel">{{ $t("server_editor.cancel") }}</button>
         </div>
       </div>
     </div>
