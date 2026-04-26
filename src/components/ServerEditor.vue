@@ -247,7 +247,7 @@ const cancel = () => {
             {{ $t("server_editor.translocators_patch") }}
             <HelpButton :text="$t('server_editor.patch_help')"></HelpButton>
           </div>
-          <textarea v-model="translocatorsPatch" :style="{width: '100%', minHeight: '100px'}"></textarea>
+          <textarea v-model="translocatorsPatch" :style="{ minHeight: '100px', resize: 'none' }"></textarea>
         </div>
         <div>
           <button :class="{ tlNaviButton: true }" @click="clearFields">{{ $t("server_editor.clear") }}</button>
@@ -271,6 +271,7 @@ button {
   padding: 5px;
 }
 
+textarea,
 input[type="text"] {
   width: calc(100% - 10px);
   min-height: 32px;
