@@ -69,7 +69,7 @@ export default {
     "app.to_coords": "Куда:",
     "app.more_teleporting": "Больше телепортаций",
     "app.more_walking": "больше ходьбы.",
-    "app.translocator_weight": "Вес телепортации",
+    "app.translocator_weight": "Вес телепортации ",
     "app.weight_help_zero": "0 значит, что вы не хотите дополнительной ходьбы",
     "app.weight_help_nonzero": "Вы готовы дополнительно пройти {{weight}} блоков, чтобы не телепортироваться лишний раз",
     "app.calculate": "Поехали",
