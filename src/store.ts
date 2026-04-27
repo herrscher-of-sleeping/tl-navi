@@ -28,7 +28,12 @@ export const DEFAULT_SERVERS: { [key: string]: { [key: string]: string}} = {
     url: "https://map.cs.aurafury.org",
     translocators: "aurafury_crystal_seas_translocators.geojson",
     landmarks: "aurafury_crystal_seas_landmarks.geojson",
-  }
+  },
+  "Eclipse (default)": {
+    url: "https://eclipsewebmap.com",
+    translocators: "eclipse_translocators.geojson",
+    landmarks: "eclipse_landmarks.geojson",
+  },
 };
 
 export const getServerList = async () => {
