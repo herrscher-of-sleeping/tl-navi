@@ -4,7 +4,7 @@ import * as types from "./pathfinder/types";
 import { makeUrl } from "@/url";
 import * as QT from "./pathfinder/quadtree";
 
-export const TOPS_NAME = "TOPS (default)";
+export const TOPS_NAME = "TOPS";
 export const TOPS_MAP_URL = "https://map.tops.vintagestory.at";
 
 export const DEFAULT_SERVERS: { [key: string]: { [key: string]: string}} = {
@@ -13,41 +13,71 @@ export const DEFAULT_SERVERS: { [key: string]: { [key: string]: string}} = {
     translocators: "tops_translocators.geojson",
     landmarks: "tops_landmarks.geojson",
   },
-  "Old TOPS (default)": {
+  "Old TOPS": {
     url: "https://map.oldtops.vintagestory.at",
     translocators: "old_tops_translocators.geojson",
     landmarks: "old_tops_landmarks.geojson",
   },
-  "Aurafury Riverlands (default)": {
+  "Aurafury Riverlands": {
     url: "https://map.ri.aurafury.org",
     translocators: "aurafury_riverlands_translocators.geojson",
     landmarks: "aurafury_riverlands_landmarks.geojson",
   },
-  "Aurafury Crystal Seas (default)": {
+  "Aurafury Crystal Seas": {
     url: "https://map.cs.aurafury.org",
     translocators: "aurafury_crystal_seas_translocators.geojson",
     landmarks: "aurafury_crystal_seas_landmarks.geojson",
   },
-  "Eclipse (default)": {
+  "ECL✦PSE": {
     url: "https://eclipsewebmap.com",
     translocators: "eclipse_translocators.geojson",
     landmarks: "eclipse_landmarks.geojson",
   },
 };
 
-export const getServerList = async () => {
-  return (await db.servers.toArray()).map(server => server.name);
+
+type GroupedServerList = [
+  {
+    group: "Default servers",
+    servers: string[],
+  },
+  {
+    group: "Custom servers",
+    servers: string[],
+  }
+];
+
+
+export const getServerList = async () : Promise<GroupedServerList> => {
+  const allServers = await db.servers.toArray();
+  const result: GroupedServerList = [
+    {
+      group: "Default servers",
+      servers: [] as string[],
+    },
+    {
+      group: "Custom servers",
+      servers: [] as string[],
+    }
+  ];
+  for (const server of allServers) {
+    if (server.isDefault) {
+      result[0].servers.push(server.name);
+    } else {
+      result[1].servers.push(server.name);
+    }
+  }
+  return result;
 };
 
 export const store = reactive({
-  serverList: await getServerList() as string[],
+  serverList: await getServerList() as GroupedServerList,
   currentServer: "",
   translocatorsGeojson: null as types.TranslocatorsGeojson | null,
   translocatorsPatch: "" as string,
   patchedTranslocatorsGeojson: null as types.TranslocatorsGeojson | null,
   landmarksGeojson: null as types.LandmarksGeojson | null,
   mapLink: "",
-  isEditingServer: false,
   isShowingInfo: false,
   zoom: 5,
   coords: null as null | types.Point,
@@ -57,6 +87,14 @@ export const store = reactive({
   showMapOverlay: false,
   url: "",
   language: localStorage.getItem("language") ?? "en",
+
+  isEditingServer: false,
+  serverEditorServerName: "",
+  serverEditorServerURL: "",
+  serverEditorTranslocatorsGeojson: null as types.TranslocatorsGeojson | null,
+  serverEditorLandmarksGeojson: null as types.LandmarksGeojson | null,
+  serverEditorTranslocatorsPatch: "",
+  serverEditorPatchedTranslocatorsGeojson: null as types.TranslocatorsGeojson | null,
 });
 
 export const formatURL = (userUrlInput?: string): string => {
@@ -83,15 +121,8 @@ watch(() => store.language, function(value) {
 
 watch(() => store.currentServer, updateServerInfo);
 
-watch(
-  () => store.currentServer,
-  async (newValue: string) => {
-    updateServerInfo(newValue);
-  }
-);
-
 export async function updateServerList() {
-  store.serverList = await getServerList() as string[];
+  store.serverList = await getServerList() as GroupedServerList;
 };
 
 watch(
@@ -147,6 +178,7 @@ db.servers.toArray().then(async () => {
 
       await db.servers.put({
         name: server_name,
+        isDefault: true,
         url: server_info.url,
         quadtree: QT.QuadTree.fromTranslocatorsGeojson(translocatorsGeojson),
         translocatorsGeojson,

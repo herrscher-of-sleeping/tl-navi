@@ -17,24 +17,23 @@ const translocatorsInput: Ref<HTMLInputElement | null> = ref(null);
 const landmarksInput: Ref<HTMLInputElement | null> = ref(null);
 
 const startEditing = () => {
-  console.log(store.currentServer, store.mapLink);
-  serverName.value = store.currentServer;
-  serverLink.value = store.mapLink;
-  translocatorsPatch.value = store.translocatorsPatch;
+  serverName.value = store.serverEditorServerName;
+  serverLink.value = store.serverEditorServerURL;
+  translocatorsPatch.value = store.serverEditorTranslocatorsPatch;
 
   const translocatorsInputTransfer = new DataTransfer();
   translocatorsInputTransfer.items.add(
-    new File([JSON.stringify(store.translocatorsGeojson)], "translocators.geojson", {
+    new File([JSON.stringify(store.serverEditorTranslocatorsGeojson)], "translocators.geojson", {
       type: "application/json",
     })
   );
   translocatorsInput.value!.files = translocatorsInputTransfer.files;
   onTranslocatorsFileChange();
 
-  if (store.landmarksGeojson) {
+  if (store.serverEditorLandmarksGeojson) {
     const landmarksInputTransfer = new DataTransfer();
     landmarksInputTransfer.items.add(
-      new File([JSON.stringify(store.landmarksGeojson)], "landmarks.geojson", {
+      new File([JSON.stringify(store.serverEditorLandmarksGeojson)], "landmarks.geojson", {
         type: "application/json",
       })
     );
@@ -46,8 +45,7 @@ const startEditing = () => {
 
 watch(
   () => store.isEditingServer,
-  (newValue, oldValue) => {
-    console.log(oldValue, newValue);
+  (newValue) => {
     if (newValue == true) {
       startEditing()
     }
@@ -163,8 +161,9 @@ const saveData = async () => {
     );
     patchedQuadtree = QT.QuadTree.fromTranslocatorsGeojson(patchedTranslocatorsGeojson);
   }
-  db.servers.put({
+  await db.servers.put({
     name: serverName.value,
+    isDefault: false,
     url: serverLink.value,
     translocatorsGeojson: translocatorsGeojson,
     landmarksGeojson: landmarksGeojson,
@@ -190,7 +189,7 @@ const deleteCurrent = async () => {
     alert("Cannot delete default server data!");
     return;
   }
-  db.servers.where("name").equals(serverName.value).delete();
+  await db.servers.where("name").equals(serverName.value).delete();
   await setServerValueOrDefault();
   store.isEditingServer = false;
   store.currentServer = TOPS_NAME;

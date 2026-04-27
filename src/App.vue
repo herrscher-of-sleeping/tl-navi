@@ -10,7 +10,6 @@ import ServerEditor from "./components/ServerEditor.vue";
 import InfoPopup from "./components/InfoPopup.vue";
 import ServerSelector from "./components/ServerSelector.vue";
 import QuestionIcon from "./components/icons/IconQuestion.vue";
-import SettingsIcon from "./components/icons/IconSettings.vue";
 import HelpButton from "./components/HelpButton.vue";
 import { store } from "./store";
 
@@ -110,10 +109,6 @@ const showInfo = () => {
   store.isShowingInfo = true;
 }
 
-const startEditing = () => {
-  store.isEditingServer = true;
-};
-
 </script>
 
 <template>
@@ -128,7 +123,6 @@ const startEditing = () => {
           <div class="editor-line server-line">
             <span class="margin-right-5-px">{{ $t("app.server") }}</span>
             <ServerSelector></ServerSelector>
-            <button :class="{ tlNaviButton: true, tlNaviIconButton: true }" @click="startEditing" :title="$t('server_editor.configure_servers')"><SettingsIcon></SettingsIcon></button>
             <div class="push-right">
               <select v-model="store.language" :class="{ tlNaviButton: true }">
                 <option value="en">English</option>
