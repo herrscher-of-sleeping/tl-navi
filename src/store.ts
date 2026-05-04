@@ -9,10 +9,9 @@ export const TOPS_MAP_URL = "https://map.tops.vintagestory.at";
 
 export const DEFAULT_SERVERS: { [key: string]: { [key: string]: string}} = {
   [TOPS_NAME]: {
-    url: "https://map.tops.vintagestory.at",
+    url: "https://tops-map.translocator.moe",
     translocators: "tops_translocators.geojson",
     landmarks: "tops_landmarks.geojson",
-
   },
   "Old TOPS (default)": {
     url: "https://map.oldtops.vintagestory.at",
