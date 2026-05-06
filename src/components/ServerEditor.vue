@@ -120,7 +120,7 @@ function parseTranslocatorsPatch(text: string): types.TranslocatorsPatch {
   const result: types.TranslocatorsPatch = [];
   const lines = text.split("\n");
   for (const line of lines) {
-    const matchResult = commandRe.exec(line);
+    const matchResult = commandRe.exec(line.trim());
     if (!matchResult) {
       continue;
     }

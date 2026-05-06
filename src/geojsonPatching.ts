@@ -73,7 +73,7 @@ export function patchTranslocatorsGeojson(
         type: "LineString",
         coordinates: [ [change.from.x, change.from.z], [ change.to.x, change.to.z ] ],
       }
-    })
+    });
   }
 
   return geojson;
