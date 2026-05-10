@@ -200,7 +200,6 @@ const cancel = () => {
   store.isEditingServer = false;
 };
 
-
 </script>
 
 <template>

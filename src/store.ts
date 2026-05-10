@@ -134,8 +134,14 @@ watch(
   }
 );
 
+function getSearchServer() {
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
+  return urlParams.get("server");
+}
+
 export async function setServerValueOrDefault(currentServer: undefined | string = undefined) {
-  let localStorageCurrentServer =
+  let localStorageCurrentServer = getSearchServer() ||
     currentServer || localStorage.getItem("currentServer") || TOPS_NAME;
   const servers_count = await db.servers.where("name").equals(localStorageCurrentServer).count();
   if (servers_count < 1) {
@@ -143,6 +149,16 @@ export async function setServerValueOrDefault(currentServer: undefined | string 
   }
   store.currentServer = localStorageCurrentServer;
 }
+
+function setSearchServer(server: string) {
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
+  urlParams.set("server", server);
+  const url = new URL(window.location.href);
+  url.search = String(urlParams)
+  window.history.pushState({server: server}, "", url)
+}
+
 
 export async function updateServerInfo(serverName: string) {
   localStorage.setItem("currentServer", serverName);
@@ -152,6 +168,7 @@ export async function updateServerInfo(serverName: string) {
   store.translocatorsPatch = serverInfo?.translocatorsPatch ?? "";
   store.landmarksGeojson = serverInfo?.landmarksGeojson as types.LandmarksGeojson;
   store.mapLink = formatURL(serverInfo?.url);
+  setSearchServer(serverName);
 }
 
 export function setDisplayPoint(point: types.Point | null) {
