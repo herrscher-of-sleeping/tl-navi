@@ -9,7 +9,7 @@ export const TOPS_MAP_URL = "https://map.tops.vintagestory.at";
 
 export const DEFAULT_SERVERS: { [key: string]: { [key: string]: string}} = {
   [TOPS_NAME]: {
-    url: "https://map.tops.vintagestory.at",
+    url: "https://tops-map.translocator.moe",
     translocators: "tops_translocators.geojson",
     landmarks: "tops_landmarks.geojson",
   },
@@ -84,8 +84,12 @@ export const store = reactive({
   otherCoords: null as null | types.Point,
   angleIn: null as null | number,
   angleOut: null as null | number,
+  isMapProvidingApi: false,
   showMapOverlay: false,
   url: "",
+  route: [] as types.Point[],
+  activeRoutePoint: null as null|number,
+  activeRoutePointCoords: null as null|types.Point,
   language: localStorage.getItem("language") ?? "en",
 
   isEditingServer: false,
@@ -168,12 +172,20 @@ export async function updateServerInfo(serverName: string) {
   store.translocatorsPatch = serverInfo?.translocatorsPatch ?? "";
   store.landmarksGeojson = serverInfo?.landmarksGeojson as types.LandmarksGeojson;
   store.mapLink = formatURL(serverInfo?.url);
+  store.route = [];
+  // Why do I have 2 values for this?
+  // TODO: fix this junk
+  store.activeRoutePoint = null;
+  store.activeRoutePointCoords = null;
   setSearchServer(serverName);
+  setDisplayPoint(null);
 }
 
 export function setDisplayPoint(point: types.Point | null) {
   store.coords = point;
-  store.showMapOverlay = true;
+  if (!store.isMapProvidingApi) {
+    store.showMapOverlay = true;
+  }
   store.url = makeUrl(store.coords);
 }
 

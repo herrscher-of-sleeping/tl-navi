@@ -62,7 +62,10 @@ function getOtherPointScreenOffset(): string {
       position: 'relative',
     }"
   >
-    <div class="zoom-select-container">
+    <div
+      class="zoom-select-container"
+      :class="{ 'hidden': store.isMapProvidingApi }"
+    >
       <span class="zoom-select-group">
         Zoom:
         <select class="zoom-select" v-model="store.zoom">
@@ -79,11 +82,18 @@ function getOtherPointScreenOffset(): string {
       :src="store.url"
       frameborder="0"
       :key="reloadKey"
-      style="width: 100%; height: 100%; display: block; position: absolute; top: 0; left: 0"
+      :style="{
+        width: '100%',
+        height: '100%',
+        display: 'block',
+        position: 'absolute',
+        top: 0,
+        left: 0,
+      }"
     ></MapFrame>
     <div
       class="overlay"
-      :class="{ 'overlay-hidden': !store.showMapOverlay }"
+      :class="{ 'hidden': !store.showMapOverlay || store.isMapProvidingApi }"
       @click="store.showMapOverlay = false"
     >
       <div class="map-target">
@@ -123,7 +133,7 @@ function getOtherPointScreenOffset(): string {
   z-index: 1000;
 }
 
-.overlay-hidden {
+.hidden {
   display: none;
 }
 

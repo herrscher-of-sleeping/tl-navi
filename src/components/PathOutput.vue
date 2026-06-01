@@ -13,8 +13,6 @@ const props = defineProps<{
   path: Point[];
 }>();
 
-const activeElement: Ref<null | number> = ref(null);
-const activePoint: Ref<null | Point> = ref(null);
 const copyInput = ref();
 const showDepth = ref(false);
 
@@ -106,13 +104,13 @@ const CoordClickie = (localProps: { pointId: number }) => {
       return;
     }
     const id = Number(pointId);
-    if (id === activeElement.value) {
-      activeElement.value = null;
-      activePoint.value = null;
+    if (id === store.activeRoutePoint) {
+      store.activeRoutePoint = null;
+      store.activeRoutePointCoords = null;
       navigateToPoint(null);
     } else {
-      activeElement.value = id;
-      activePoint.value = point;
+      store.activeRoutePoint = id;
+      store.activeRoutePointCoords = point;
       navigateToPoint(id);
     }
   };
@@ -152,7 +150,7 @@ const CoordClickie = (localProps: { pointId: number }) => {
         },
         class: {
           "coord-clickie": true,
-          "coord-clickie-active": isSamePoint(activePoint.value, point),
+          "coord-clickie-active": isSamePoint(store.activeRoutePointCoords, point),
         },
       },
       [tlIcon, buildCoordinates(localProps)]

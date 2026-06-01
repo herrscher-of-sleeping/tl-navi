@@ -24,7 +24,6 @@ const to = ref<Value | null>({ coordinates: [0, 0] });
 const isCalculating = ref(false);
 const progress = ref(0);
 const progressType = ref("");
-const path = ref<types.Point[]>([]);
 const maxWalkDistance = ref(1000);
 const translocatorWeight = ref(300);
 const isMobile = ref(_isMobile());
@@ -68,7 +67,7 @@ async function calculatePath(from: Value | null, to: Value | null) {
   }
 
   const result = (await next).value;
-  path.value = result;
+  store.route = Array.from(result);
 
   isCalculating.value = false;
 }
@@ -95,14 +94,24 @@ const handleResize = () => {
   isMobile.value = _isMobile();
 };
 
+
+const handleMessage = (event: MessageEvent) => {
+  if (event.data.type == "map_has_api_capabilities") {
+    store.isMapProvidingApi = true;
+    store.showMapOverlay = false;
+  }
+};
+
 onMounted(async () => {
   window.addEventListener("keydown", handleEnterKey);
   window.addEventListener("resize", handleResize);
+  window.addEventListener("message", handleMessage);
 });
 
 onUnmounted(async () => {
   window.removeEventListener("keydown", handleEnterKey);
   window.removeEventListener("resize", handleResize);
+  window.removeEventListener("message", handleMessage);
 });
 
 const showInfo = () => {
@@ -167,7 +176,7 @@ const showInfo = () => {
           </div>
         </div>
         <div id="path-output">
-          <PathOutput :path="path"></PathOutput>
+          <PathOutput :path="store.route"></PathOutput>
         </div>
       </div>
       <div

@@ -1,5 +1,7 @@
 export type Point = [number, number] | [number, number, number];
 
+export type XZ = [number, number];
+
 export type TralnslocatorPairFeature = {
   type: "Feature";
   properties: {
@@ -11,6 +13,21 @@ export type TralnslocatorPairFeature = {
   geometry: {
     type: "LineString";
     coordinates: [Point, Point];
+  };
+};
+
+export type RouteSegment = {
+  type: "Feature";
+  properties: {
+    depth1: number;
+    depth2: number;
+    label: string;
+    tag: string;
+    segmentType?: string;
+  };
+  geometry: {
+    type: "LineString";
+    coordinates: [XZ, XZ];
   };
 };
 
@@ -41,11 +58,11 @@ export type LandmarksGeojson = {
 
 export type Point3D = {
   x: number,
-  y: number,
+  y?: number,
   z: number,
 };
 
-export type TranslocatorPatchOperationAdd =  { from: Point3D, to: Point3D, operation: "add" };
-export type TranslocatorPatchOperationDelete =  { from: Point3D, operation: "delete" };
+export type TranslocatorPatchOperationAdd = { from: Point3D, to: Point3D, operation: "add" };
+export type TranslocatorPatchOperationDelete = { from: Point3D, operation: "delete" };
 
 export type TranslocatorsPatch = (TranslocatorPatchOperationAdd|TranslocatorPatchOperationDelete)[];
